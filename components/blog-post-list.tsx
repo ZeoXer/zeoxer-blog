@@ -1,22 +1,12 @@
 "use client";
 
 import { Skeleton } from "@heroui/skeleton";
-import { Spacer } from "@heroui/spacer";
 import { BlogPostCard } from "./blog-post-card";
 import { Card } from "@heroui/card";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  lastUpdated: string;
-  category: string;
-  slug: string;
-}
+import { TArticle } from "@/types/article";
 
 interface BlogPostListProps {
-  posts: BlogPost[];
+  posts: TArticle[];
   loading?: boolean;
 }
 
@@ -25,7 +15,7 @@ export const BlogPostList = ({ posts, loading = false }: BlogPostListProps) => {
     return (
       <div className="flex flex-col gap-6">
         {[1, 2, 3, 4].map((i) => (
-          <Card className="w-full space-y-5 p-4">
+          <Card className="w-full space-y-5 p-4" key={i}>
             <Skeleton className="w-4/5 rounded-lg">
               <div className="h-3 w-4/5 rounded-lg bg-default-200" />
             </Skeleton>
@@ -57,10 +47,10 @@ export const BlogPostList = ({ posts, loading = false }: BlogPostListProps) => {
       {posts.map((post) => (
         <BlogPostCard
           key={post.id}
+          id={post.id}
           title={post.title}
           excerpt={post.excerpt}
           lastUpdated={post.lastUpdated}
-          slug={post.slug}
         />
       ))}
     </div>

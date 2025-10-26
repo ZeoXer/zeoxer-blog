@@ -3,74 +3,74 @@
 import { MainBanner } from "@/components/main-banner";
 import { CategorySidebar } from "@/components/category-sidebar";
 import { BlogPostList } from "@/components/blog-post-list";
-import { PageFooter } from "@/components/page-footer";
 import { MainLayout } from "@/components/main-layout";
 import { FolderIcon } from "@/components/icons";
+import { SearchArea } from "@/components/search-area";
+import { useEffect, useState } from "react";
+import {
+  getAllPublicArticleCategory,
+  getPublicArticlesByCategory,
+} from "@/data/article";
+import { TCategory } from "@/types/article";
+import { useCategory } from "./use-category";
 
-// Mock data for demonstration
-const categories = [
-  { id: "a", name: "Category A", icon: <FolderIcon /> },
-  { id: "b", name: "Category B", icon: <FolderIcon /> },
-  { id: "c", name: "Category C", icon: <FolderIcon /> },
-  { id: "d", name: "Category D", icon: <FolderIcon /> },
-  { id: "e", name: "Category E", icon: <FolderIcon /> },
-  { id: "f", name: "Category F", icon: <FolderIcon /> },
-];
-
-const mockPosts = [
-  {
-    id: "1",
-    title: "文章標題",
-    excerpt:
-      "文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文...",
-    content: "Full content here",
-    lastUpdated: "2025/10/21",
-    category: "a",
-    slug: "post-1",
-  },
-  {
-    id: "2",
-    title: "文章標題",
-    excerpt:
-      "文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文...",
-    content: "Full content here",
-    lastUpdated: "2025/10/21",
-    category: "b",
-    slug: "post-2",
-  },
-  {
-    id: "3",
-    title: "文章標題",
-    excerpt:
-      "文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文...",
-    content: "Full content here",
-    lastUpdated: "2025/10/21",
-    category: "c",
-    slug: "post-3",
-  },
-  {
-    id: "4",
-    title: "文章標題",
-    excerpt:
-      "文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文...",
-    content: "Full content here",
-    lastUpdated: "2025/10/21",
-    category: "c",
-    slug: "post-3",
-  },
-  {
-    id: "5",
-    title: "文章標題",
-    excerpt:
-      "文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文文章內文...",
-    content: "Full content here",
-    lastUpdated: "2025/10/21",
-    category: "c",
-    slug: "post-3",
-  },
-];
+const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "ZeoXer";
 
 export default function Home() {
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const {
+    activeCategory,
+    setActiveCategory,
+    articles,
+    setArticles,
+    loading,
+    setLoading,
+  } = useCategory();
+
+  useEffect(() => {
+    fetchArticleCategories();
+  }, []);
+
+  const fetchArticleCategories = async () => {
+    try {
+      const { data } = await getAllPublicArticleCategory(USER_NAME);
+      const formattedCategories = data.map((category) => ({
+        id: category.id,
+        name: category.category_name,
+        icon: <FolderIcon />,
+      }));
+      setCategories(formattedCategories);
+    } catch (error) {
+      console.error("Error fetching article categories:", error);
+    }
+  };
+
+  const arrangeDateFormat = (date: Date) => {
+    const [year, month, day] = date.toLocaleDateString().split("/");
+    return `${year}/${month.padStart(2, "0")}/${day.padStart(2, "0")}`;
+  };
+
+  const fetchArticlesByCategory = async (categoryId: number) => {
+    setLoading(true);
+    try {
+      const { data } = await getPublicArticlesByCategory(categoryId, USER_NAME);
+      const formattedArticles = data.map((article) => ({
+        id: article.id,
+        categoryId: article.category_id,
+        title: article.title,
+        content: article.content,
+        excerpt: article.content.slice(0, 100) + "...",
+        lastUpdated: arrangeDateFormat(new Date(article.updated_at)),
+      }));
+      setArticles(formattedArticles);
+      setActiveCategory(categoryId);
+    } catch (error) {
+      console.error("Error fetching articles by category:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -82,22 +82,27 @@ export default function Home() {
 
       {/* Main Content Area */}
       <MainLayout
-        sidebar={
+        leftSidebar={
           <CategorySidebar
             categories={categories}
-            onCategoryClick={(id) => console.log("Category clicked:", id)}
+            activeCategory={activeCategory}
+            onCategoryClick={(id) => fetchArticlesByCategory(id)}
           />
         }
+        rightSidebar={<SearchArea />}
+        lgLayoutRatio="lg:grid-cols-[25%_1fr_25%]"
       >
         {/* Blog Post List */}
-        <BlogPostList posts={mockPosts} />
+        {!activeCategory ? (
+          <p className="text-center text-default-500 p-6">
+            請選擇左側分類以查看文章
+          </p>
+        ) : articles.length > 0 ? (
+          <BlogPostList posts={articles} loading={loading} />
+        ) : (
+          <p className="text-center text-default-500 p-6">無此分類的文章</p>
+        )}
       </MainLayout>
-
-      {/* Footer */}
-      <PageFooter
-        year={new Date().getFullYear()}
-        onAdminClick={() => console.log("Admin login clicked")}
-      />
     </div>
   );
 }

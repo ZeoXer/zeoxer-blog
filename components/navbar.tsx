@@ -15,7 +15,7 @@ import NextLink from "next/link";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { HeartFilledIcon } from "@/components/icons";
+import { UserIcon } from "@/components/icons";
 import ZeoXerLogo from "@/public/zeoxers-blog-logo-transparent.svg";
 import ZeoXerWhiteLogo from "@/public/zeoxers-blog-logo-white-transparent.svg";
 import Image from "next/image";
@@ -53,7 +53,7 @@ export const Navbar = () => {
             as={Link}
             className="text-sm font-normal text-default-600 bg-default-100"
             href={"/"}
-            startContent={<HeartFilledIcon className="text-danger" />}
+            startContent={<UserIcon className="w-5" />}
             variant="flat"
           >
             關於作者
@@ -67,25 +67,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
+        <div className="mx-4 mt-2 flex flex-col gap-2"></div>
       </NavbarMenu>
     </HeroUINavbar>
   );

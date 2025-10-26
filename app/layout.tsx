@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
@@ -8,6 +7,8 @@ import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
+import { PageFooter } from "@/components/page-footer";
+import { CategoryProvider } from "./use-category";
 
 export const metadata: Metadata = {
   title: {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: {
-    icon: "/favicon.ico",
+    icon: "/zeoxers-blog-logo-transparent.svg",
   },
 };
 
@@ -33,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="zh-TW">
       <head />
       <body
         className={clsx(
@@ -42,12 +43,15 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            <Navbar />
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-              {children}
-            </main>
-          </div>
+          <CategoryProvider>
+            <div className="relative flex flex-col h-screen">
+              <Navbar />
+              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                {children}
+              </main>
+              <PageFooter year={new Date().getFullYear()} />
+            </div>
+          </CategoryProvider>
         </Providers>
       </body>
     </html>

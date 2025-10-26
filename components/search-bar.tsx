@@ -5,17 +5,19 @@ import { SearchIcon } from "@/components/icons";
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch?: (query: string) => void;
   className?: string;
+  onSearch?: (query: string) => void;
 }
 
 export const SearchBar = ({
   placeholder = "Search",
-  onSearch,
   className = "",
+  onSearch,
 }: SearchBarProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch?.(e.target.value);
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSearch) {
+      onSearch(e.target.value);
+    }
   };
 
   return (
@@ -28,7 +30,7 @@ export const SearchBar = ({
       size="lg"
       startContent={<SearchIcon className="text-default-400" />}
       type="search"
-      onChange={handleChange}
+      onChange={handleSearch}
     />
   );
 };

@@ -1,19 +1,13 @@
 "use client";
 
-import { ReactNode } from "react";
+import { TCategory } from "@/types/article";
 import { Card, CardBody } from "@heroui/card";
 import { Link } from "@heroui/link";
 
-interface Category {
-  id: string;
-  name: string;
-  icon: ReactNode;
-}
-
 interface CategorySidebarProps {
-  categories: Category[];
-  activeCategory?: string;
-  onCategoryClick?: (categoryId: string) => void;
+  categories: TCategory[];
+  activeCategory?: number;
+  onCategoryClick?: (categoryId: number) => void;
 }
 
 export const CategorySidebar = ({
@@ -37,9 +31,7 @@ export const CategorySidebar = ({
               onPress={() => onCategoryClick?.(category.id)}
             >
               <span className="text-default-500">{category.icon}</span>
-              <span className="text-default-700 dark:text-default-300">
-                {category.name}
-              </span>
+              <span className="text-default-700">{category.name}</span>
             </Link>
           ))}
         </div>

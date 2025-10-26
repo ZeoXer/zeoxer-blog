@@ -1,3 +1,128 @@
 @import "tailwindcss";
 
-@config "../tailwind.config.js"
+@layer base {
+  .shiki {
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    border-radius: 1rem;
+
+    code {
+      font-family: "Fira Code", monospace;
+      font-size: 1rem;
+    }
+  }
+
+  @font-face {
+    font-family: "openhuninn";
+    font-style: normal;
+    font-weight: 100 500 900;
+    src: url("@/public/jf-openhuninn-2.0.ttf") format("truetype");
+  }
+
+  /* CHROME & SAFARI */
+  *::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: oklch(55.3% 0.013 58.071);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: oklch(44.4% 0.011 73.639);
+    border-radius: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb:active {
+    background: oklch(37.4% 0.01 67.558);
+    border-radius: 10px;
+  }
+
+  /* MOZILLA FIREFOX */
+  *::-moz-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  *::-moz-scrollbar-track {
+    background-color: transparent;
+  }
+
+  *::-moz-scrollbar-thumb {
+    background: oklch(55.3% 0.013 58.071);
+    border-radius: 8px;
+  }
+
+  *::-moz-scrollbar-thumb:hover {
+    background: oklch(44.4% 0.011 73.639);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  *::-moz-scrollbar-thumb:active {
+    background: oklch(37.4% 0.01 67.558);
+    border-radius: 10px;
+  }
+
+  /* MICROSOFT INTERNET EXPLORER */
+  *::-ms-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  *::-ms-scrollbar-track {
+    background-color: transparent;
+  }
+
+  *::-ms-scrollbar-thumb {
+    background: oklch(55.3% 0.013 58.071);
+    border-radius: 8px;
+  }
+
+  *::-ms-scrollbar-thumb:hover {
+    background: oklch(44.4% 0.011 73.639);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  *::-ms-scrollbar-thumb:active {
+    background: oklch(37.4% 0.01 67.558);
+    border-radius: 10px;
+  }
+
+  /* OPERA */
+  *::-o-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  *::-o-scrollbar-track {
+    background-color: transparent;
+  }
+
+  *::-o-scrollbar-thumb {
+    background: oklch(55.3% 0.013 58.071);
+    border-radius: 8px;
+  }
+
+  *::-o-scrollbar-thumb:hover {
+    background: oklch(44.4% 0.011 73.639);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  *::-o-scrollbar-thumb:active {
+    background: oklch(37.4% 0.01 67.558);
+    border-radius: 10px;
+  }
+}
+
+@config "../tailwind.config.js";
