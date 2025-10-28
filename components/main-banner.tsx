@@ -14,10 +14,12 @@ export const MainBanner = ({
       className="relative h-[400px] w-full bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute w-11/12 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:translate-0 lg:w-full lg:inset-0 flex items-center justify-center">
         <div className="bg-black/40 backdrop-blur-sm px-16 py-8 text-center rounded-xl">
-          <h1 className="text-4xl font-bold text-white mb-4">{title}</h1>
-          <p className="text-white/90 text-lg">{description}</p>
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+            {title}
+          </h1>
+          <p className="text-white/90 lg:text-lg">{description}</p>
         </div>
       </div>
     </section>

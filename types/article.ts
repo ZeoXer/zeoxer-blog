@@ -32,5 +32,6 @@ export type TArticle = {
   title: string;
   excerpt: string;
   content: string;
+  isPublished?: boolean;
   lastUpdated: string;
 };

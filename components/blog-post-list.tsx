@@ -4,13 +4,19 @@ import { Skeleton } from "@heroui/skeleton";
 import { BlogPostCard } from "./blog-post-card";
 import { Card } from "@heroui/card";
 import { TArticle } from "@/types/article";
+import { AdminBlogPostCard } from "./admin-blog-post-card";
 
 interface BlogPostListProps {
   posts: TArticle[];
   loading?: boolean;
+  isAdmin?: boolean;
 }
 
-export const BlogPostList = ({ posts, loading = false }: BlogPostListProps) => {
+export const BlogPostList = ({
+  posts,
+  loading = false,
+  isAdmin = false,
+}: BlogPostListProps) => {
   if (loading) {
     return (
       <div className="flex flex-col gap-6">
@@ -44,15 +50,25 @@ export const BlogPostList = ({ posts, loading = false }: BlogPostListProps) => {
 
   return (
     <div className="flex flex-col gap-6">
-      {posts.map((post) => (
-        <BlogPostCard
-          key={post.id}
-          id={post.id}
-          title={post.title}
-          excerpt={post.excerpt}
-          lastUpdated={post.lastUpdated}
-        />
-      ))}
+      {posts.map((post) =>
+        isAdmin ? (
+          <AdminBlogPostCard
+            key={post.id}
+            id={post.id}
+            title={post.title}
+            isPublished={post.isPublished ?? false}
+            lastUpdated={post.lastUpdated}
+          />
+        ) : (
+          <BlogPostCard
+            key={post.id}
+            id={post.id}
+            title={post.title}
+            excerpt={post.excerpt}
+            lastUpdated={post.lastUpdated}
+          />
+        )
+      )}
     </div>
   );
 };

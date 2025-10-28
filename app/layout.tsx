@@ -6,9 +6,7 @@ import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
-import { PageFooter } from "@/components/page-footer";
-import { CategoryProvider } from "./use-category";
+import RootLayoutWrapper from "./root-layout-wrapper";
 
 export const metadata: Metadata = {
   title: {
@@ -43,15 +41,7 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <CategoryProvider>
-            <div className="relative flex flex-col h-screen">
-              <Navbar />
-              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                {children}
-              </main>
-              <PageFooter year={new Date().getFullYear()} />
-            </div>
-          </CategoryProvider>
+          <RootLayoutWrapper>{children}</RootLayoutWrapper>
         </Providers>
       </body>
     </html>

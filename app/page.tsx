@@ -1,7 +1,10 @@
 "use client";
 
 import { MainBanner } from "@/components/main-banner";
-import { CategorySidebar } from "@/components/category-sidebar";
+import {
+  CategorySidebar,
+  MobileCategorySidebar,
+} from "@/components/category-sidebar";
 import { BlogPostList } from "@/components/blog-post-list";
 import { MainLayout } from "@/components/main-layout";
 import { FolderIcon } from "@/components/icons";
@@ -92,10 +95,15 @@ export default function Home() {
         rightSidebar={<SearchArea />}
         lgLayoutRatio="lg:grid-cols-[25%_1fr_25%]"
       >
+        <MobileCategorySidebar
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryClick={(id) => fetchArticlesByCategory(id)}
+        />
         {/* Blog Post List */}
         {!activeCategory ? (
-          <p className="text-center text-default-500 p-6">
-            請選擇左側分類以查看文章
+          <p className="text-center text-default-500 p-6 hidden lg:block">
+            請選擇分類以查看文章
           </p>
         ) : articles.length > 0 ? (
           <BlogPostList posts={articles} loading={loading} />

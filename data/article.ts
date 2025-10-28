@@ -116,9 +116,9 @@ export async function getPublicArticlesByCategory(
   return response;
 }
 
-export async function getArticleAnalysis() {
+export async function getArticleAnalysis(authorName: string) {
   const response = await HttpClient.get<APIResponse<ArticleAnalysis>>(
-    API_ENDPOINTS.GET_ARTICLE_ANALYSIS
+    `${API_ENDPOINTS.GET_ARTICLE_ANALYSIS}/${authorName}`
   );
 
   return response;
