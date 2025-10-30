@@ -18,6 +18,7 @@ const MarkdownDisplay = ({ content }: { content: string }) => {
     return {
       fontSize: fontSize,
       fontWeight: "700",
+      lineHeight: "2.25",
     };
   };
 
@@ -75,7 +76,7 @@ const MarkdownDisplay = ({ content }: { content: string }) => {
           );
         },
         p(props) {
-          return <p className="text-lg" {...props} />;
+          return <p className="text-lg leading-loose" {...props} />;
         },
         a(props) {
           return (
@@ -102,7 +103,7 @@ const MarkdownDisplay = ({ content }: { content: string }) => {
           return match ? (
             <Code
               code={codeContent}
-              lang={match[1] as BundledLanguage}
+              lang={match[1] ? (match[1] as BundledLanguage) : "markdown"}
               theme={theme === "dark" ? "github-dark" : "one-light"}
             />
           ) : (

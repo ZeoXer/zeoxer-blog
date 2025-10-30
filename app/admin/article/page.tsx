@@ -6,10 +6,13 @@ import {
   CategorySidebar,
   MobileCategorySidebar,
 } from "@/components/category-sidebar";
-import { FolderIcon } from "@/components/icons";
+import { FolderIcon, PlusIcon } from "@/components/icons";
 import { MainLayout } from "@/components/main-layout";
 import { getAllArticleCategory, getArticlesByCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
+import { Button } from "@heroui/button";
+import { Pagination } from "@heroui/pagination";
+import { Link } from "@heroui/link";
 import { useEffect, useState } from "react";
 
 export default function AdminArticlePage() {
@@ -17,15 +20,25 @@ export default function AdminArticlePage() {
   const {
     articles,
     activeCategory,
+    loading,
+    currentPage,
+    totalPages,
     setArticles,
     setActiveCategory,
     setLoading,
-    loading,
+    setCurrentPage,
+    setTotalPages,
   } = useCategory();
 
   useEffect(() => {
     fetchArticleCategories();
   }, []);
+
+  useEffect(() => {
+    if (activeCategory) {
+      fetchArticlesByCategory(activeCategory);
+    }
+  }, [currentPage]);
 
   const fetchArticleCategories = async () => {
     try {
@@ -49,8 +62,8 @@ export default function AdminArticlePage() {
   const fetchArticlesByCategory = async (categoryId: number) => {
     setLoading(true);
     try {
-      const { data } = await getArticlesByCategory(categoryId);
-      const formattedArticles = data.map((article) => ({
+      const { data } = await getArticlesByCategory(categoryId, currentPage);
+      const formattedArticles = data.articles.map((article) => ({
         id: article.id,
         categoryId: article.category_id,
         title: article.title,
@@ -61,6 +74,7 @@ export default function AdminArticlePage() {
       }));
       setArticles(formattedArticles);
       setActiveCategory(categoryId);
+      setTotalPages(data.total_page);
     } catch (error) {
       console.error("Error fetching articles by category:", error);
     } finally {
@@ -74,7 +88,12 @@ export default function AdminArticlePage() {
         <CategorySidebar
           categories={categories}
           activeCategory={activeCategory}
-          onCategoryClick={(id) => fetchArticlesByCategory(id)}
+          onCategoryClick={(id) => {
+            if (id !== activeCategory) {
+              setCurrentPage(1);
+            }
+            fetchArticlesByCategory(id);
+          }}
         />
       }
       lgLayoutRatio="lg:grid-cols-[25%_1fr]"
@@ -82,13 +101,45 @@ export default function AdminArticlePage() {
       <MobileCategorySidebar
         categories={categories}
         activeCategory={activeCategory}
-        onCategoryClick={(id) => fetchArticlesByCategory(id)}
+        onCategoryClick={(id) => {
+          if (id !== activeCategory) {
+            setCurrentPage(1);
+          }
+          fetchArticlesByCategory(id);
+        }}
       />
       {/* Blog Post List */}
-      {articles.length > 0 ? (
-        <BlogPostList posts={articles} loading={loading} isAdmin />
+      {activeCategory ? (
+        articles.length > 0 ? (
+          <section className="flex flex-col gap-4">
+            <header className="flex items-center justify-between">
+              <Pagination
+                initialPage={currentPage}
+                total={totalPages}
+                showControls
+                color="warning"
+                size="lg"
+                className="cursor-pointer"
+                onChange={setCurrentPage}
+              />
+              <Button
+                as={Link}
+                href="/admin/article/0"
+                size="lg"
+                color="warning"
+                variant="shadow"
+                startContent={<PlusIcon className="w-6" />}
+              >
+                新文章
+              </Button>
+            </header>
+            <BlogPostList posts={articles} loading={loading} isAdmin />
+          </section>
+        ) : (
+          <p className="text-center text-default-500 p-6">無此分類的文章</p>
+        )
       ) : (
-        <p className="text-center text-default-500 p-6">無此分類的文章</p>
+        <p className="text-center text-default-500 p-6">未選擇分類</p>
       )}
     </MainLayout>
   );

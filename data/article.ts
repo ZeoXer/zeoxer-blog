@@ -97,20 +97,42 @@ export async function updateArticle(
   return response;
 }
 
-export async function getArticlesByCategory(categoryId: number) {
-  const response = await HttpClient.get<APIResponse<Article[]>>(
-    `${API_ENDPOINTS.GET_ARTICLES_BY_CATEGORY}/${categoryId}`
+export async function deleteArticle(articleId: number) {
+  const response = await HttpClient.delete<APIResponse<unknown>>(
+    `${API_ENDPOINTS.DELETE_ARTICLE}/${articleId}`
   );
+
+  return response;
+}
+
+export async function getArticlesByCategory(
+  categoryId: number,
+  page: number = 1
+) {
+  const response = await HttpClient.get<
+    APIResponse<{ articles: Article[]; total_page: number }>
+  >(`${API_ENDPOINTS.GET_ARTICLES_BY_CATEGORY}/${categoryId}?page=${page}`);
 
   return response;
 }
 
 export async function getPublicArticlesByCategory(
   categoryId: number,
-  authorName: string
+  authorName: string,
+  page: number = 1
 ) {
-  const response = await HttpClient.get<APIResponse<Article[]>>(
-    `${API_ENDPOINTS.GET_PUBLIC_ARTICLES_BY_CATEGORY}/${authorName}/${categoryId}`
+  const response = await HttpClient.get<
+    APIResponse<{ articles: Article[]; total_page: number }>
+  >(
+    `${API_ENDPOINTS.GET_PUBLIC_ARTICLES_BY_CATEGORY}/${authorName}/${categoryId}?page=${page}`
+  );
+
+  return response;
+}
+
+export async function deleteArticleCategory(categoryId: number) {
+  const response = await HttpClient.delete<APIResponse<unknown>>(
+    `${API_ENDPOINTS.DELETE_CATEGORY}/${categoryId}`
   );
 
   return response;

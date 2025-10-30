@@ -9,6 +9,8 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
+    "@codemirror/lang-markdown": "^6.5.0",
+    "@codemirror/language-data": "^6.5.2",
     "@heroui/accordion": "2.2.24",
     "@heroui/alert": "2.2.27",
     "@heroui/autocomplete": "2.3.29",
@@ -51,9 +53,13 @@
     "@heroui/user": "2.2.22",
     "@react-aria/ssr": "3.9.10",
     "@react-aria/visually-hidden": "3.8.28",
+    "@types/codemirror": "^5.60.17",
+    "@uiw/codemirror-theme-vscode": "^4.25.2",
+    "@uiw/react-codemirror": "^4.25.2",
     "axios": "^1.12.2",
     "clsx": "2.1.1",
     "framer-motion": "11.18.2",
+    "idb-keyval": "^6.2.2",
     "intl-messageformat": "10.7.16",
     "js-cookie": "^3.0.5",
     "marked": "^16.4.1",

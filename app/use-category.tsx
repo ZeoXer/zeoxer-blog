@@ -16,6 +16,10 @@ type CategoryContextValue = {
   setArticles: (articles: TArticle[]) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalPages: number;
+  setTotalPages: (pages: number) => void;
 };
 
 const CategoryContext = createContext<CategoryContextValue | undefined>(
@@ -37,6 +41,8 @@ export function CategoryProvider({
   );
   const [articles, setArticles] = useState<TArticle[]>(initialArticles);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const value = useMemo<CategoryContextValue>(
     () => ({
@@ -46,14 +52,22 @@ export function CategoryProvider({
       setArticles,
       loading,
       setLoading,
+      currentPage,
+      setCurrentPage,
+      totalPages,
+      setTotalPages,
     }),
     [
       activeCategory,
       articles,
       loading,
+      currentPage,
+      totalPages,
       setActiveCategory,
       setArticles,
       setLoading,
+      setCurrentPage,
+      setTotalPages,
     ]
   );
 

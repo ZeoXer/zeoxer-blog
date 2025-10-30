@@ -9,6 +9,7 @@ import { BlogPostList } from "@/components/blog-post-list";
 import { MainLayout } from "@/components/main-layout";
 import { FolderIcon } from "@/components/icons";
 import { SearchArea } from "@/components/search-area";
+import { Pagination } from "@heroui/pagination";
 import { useEffect, useState } from "react";
 import {
   getAllPublicArticleCategory,
@@ -17,7 +18,7 @@ import {
 import { TCategory } from "@/types/article";
 import { useCategory } from "./use-category";
 
-const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "ZeoXer";
+const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
 
 export default function Home() {
   const [categories, setCategories] = useState<TCategory[]>([]);
@@ -28,11 +29,21 @@ export default function Home() {
     setArticles,
     loading,
     setLoading,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    setTotalPages,
   } = useCategory();
 
   useEffect(() => {
     fetchArticleCategories();
   }, []);
+
+  useEffect(() => {
+    if (activeCategory) {
+      fetchArticlesByCategory(activeCategory);
+    }
+  }, [currentPage]);
 
   const fetchArticleCategories = async () => {
     try {
@@ -56,8 +67,12 @@ export default function Home() {
   const fetchArticlesByCategory = async (categoryId: number) => {
     setLoading(true);
     try {
-      const { data } = await getPublicArticlesByCategory(categoryId, USER_NAME);
-      const formattedArticles = data.map((article) => ({
+      const { data } = await getPublicArticlesByCategory(
+        categoryId,
+        USER_NAME,
+        currentPage
+      );
+      const formattedArticles = data.articles.map((article) => ({
         id: article.id,
         categoryId: article.category_id,
         title: article.title,
@@ -67,6 +82,7 @@ export default function Home() {
       }));
       setArticles(formattedArticles);
       setActiveCategory(categoryId);
+      setTotalPages(data.total_page);
     } catch (error) {
       console.error("Error fetching articles by category:", error);
     } finally {
@@ -89,7 +105,12 @@ export default function Home() {
           <CategorySidebar
             categories={categories}
             activeCategory={activeCategory}
-            onCategoryClick={(id) => fetchArticlesByCategory(id)}
+            onCategoryClick={(id) => {
+              if (id !== activeCategory) {
+                setCurrentPage(1);
+              }
+              fetchArticlesByCategory(id);
+            }}
           />
         }
         rightSidebar={<SearchArea />}
@@ -98,7 +119,12 @@ export default function Home() {
         <MobileCategorySidebar
           categories={categories}
           activeCategory={activeCategory}
-          onCategoryClick={(id) => fetchArticlesByCategory(id)}
+          onCategoryClick={(id) => {
+            if (id !== activeCategory) {
+              setCurrentPage(1);
+            }
+            fetchArticlesByCategory(id);
+          }}
         />
         {/* Blog Post List */}
         {!activeCategory ? (
@@ -106,7 +132,18 @@ export default function Home() {
             請選擇分類以查看文章
           </p>
         ) : articles.length > 0 ? (
-          <BlogPostList posts={articles} loading={loading} />
+          <section className="flex flex-col gap-4">
+            <Pagination
+              initialPage={currentPage}
+              total={totalPages}
+              showControls
+              color="warning"
+              size="lg"
+              className="cursor-pointer"
+              onChange={setCurrentPage}
+            />
+            <BlogPostList posts={articles} loading={loading} />
+          </section>
         ) : (
           <p className="text-center text-default-500 p-6">無此分類的文章</p>
         )}

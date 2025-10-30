@@ -30,7 +30,7 @@ export const ArticleSeriesSidebar = ({
   const fetchArticlesByCategory = async (categoryId: number) => {
     try {
       const { data } = await getPublicArticlesByCategory(categoryId, USER_NAME);
-      const formattedArticles = data.map((article) => ({
+      const formattedArticles = data.articles.map((article) => ({
         id: article.id,
         categoryId: article.category_id,
         title: article.title,

@@ -27,7 +27,7 @@ export const ArticleContent = ({
 
       {/* Article Content */}
       <div className="prose prose-invert max-w-none">
-        <div className="text-default-700 leading-relaxed whitespace-pre-wrap">
+        <div className="text-default-700 leading-relaxed">
           <MarkdownDisplay content={content} />
         </div>
       </div>

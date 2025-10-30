@@ -11,10 +11,14 @@ import ZeoXerWhiteLogo from "@/public/zeoxers-blog-logo-white-transparent.svg";
 import { Button } from "@heroui/button";
 import { login } from "@/data/auth";
 import { setAuthToken } from "@/data/client/token";
+import { addToast } from "@heroui/toast";
+import { useRouter } from "next/navigation";
+import { setAuthTokenServer } from "@/data/server/token";
 
 export default function AdminLoginPage() {
   const { theme } = useTheme();
   const isSSR = useIsSSR();
+  const router = useRouter();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +30,13 @@ export default function AdminLoginPage() {
       const { data, status } = await login(email, password);
       if (status === 1) {
         setAuthToken(data.token);
-        window.location.assign("article");
+        router.push("article");
+        addToast({
+          title: "登入成功",
+          timeout: 3000,
+          shouldShowTimeoutProgress: true,
+          color: "success",
+        });
       }
     } catch (error) {
       console.error("Login failed:", error);

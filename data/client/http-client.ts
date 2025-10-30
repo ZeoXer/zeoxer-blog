@@ -45,7 +45,7 @@ Axios.interceptors.response.use(
   (error) => {
     if (checkStatus(error.response?.status) && !checkUrlInWhiteList()) {
       clearAuthToken();
-      window.location.assign("login");
+      window.location.pathname = "/admin/login";
     }
 
     return Promise.reject(error);

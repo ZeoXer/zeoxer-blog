@@ -21,7 +21,7 @@ export const BlogPostList = ({
     return (
       <div className="flex flex-col gap-6">
         {[1, 2, 3, 4].map((i) => (
-          <Card className="w-full space-y-5 p-4" key={i}>
+          <Card className="w-full space-y-5 p-4 animate-appearance-in" key={i}>
             <Skeleton className="w-4/5 rounded-lg">
               <div className="h-3 w-4/5 rounded-lg bg-default-200" />
             </Skeleton>
@@ -52,13 +52,7 @@ export const BlogPostList = ({
     <div className="flex flex-col gap-6">
       {posts.map((post) =>
         isAdmin ? (
-          <AdminBlogPostCard
-            key={post.id}
-            id={post.id}
-            title={post.title}
-            isPublished={post.isPublished ?? false}
-            lastUpdated={post.lastUpdated}
-          />
+          <AdminBlogPostCard key={post.id} post={post} />
         ) : (
           <BlogPostCard
             key={post.id}

@@ -15,10 +15,12 @@ import ZeoXerLogo from "@/public/zeoxers-blog-logo-transparent.svg";
 import ZeoXerWhiteLogo from "@/public/zeoxers-blog-logo-white-transparent.svg";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useIsSSR } from "@react-aria/ssr";
-import { isAuthenticated } from "@/data/client/token";
+import { clearAuthToken, isAuthenticated } from "@/data/client/token";
 import { useEffect, useState } from "react";
+import { Button } from "@heroui/button";
+import { addToast } from "@heroui/toast";
 
 export const Navbar = () => {
   const { theme } = useTheme();
@@ -45,7 +47,7 @@ export const Navbar = () => {
             <Image
               src={theme === "dark" && !isSSR ? ZeoXerWhiteLogo : ZeoXerLogo}
               alt="ZeoXer's Blog Logo"
-              className="w-14 h-14"
+              className="w-14 h-14 shrink-0"
               width={44}
               height={44}
             />
@@ -92,10 +94,22 @@ export const AdminNavbar = () => {
   const pathname = usePathname();
   const isAuth = isAuthenticated();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const logout = () => {
+    clearAuthToken();
+    router.replace("/admin/login");
+    addToast({
+      title: "已登出",
+      timeout: 2000,
+      shouldShowTimeoutProgress: true,
+      color: "primary",
+    });
+  };
 
   const tabs = [
     {
@@ -107,6 +121,10 @@ export const AdminNavbar = () => {
     {
       key: "/admin/category",
       match: (path: string | null) => path === "/admin/category",
+    },
+    {
+      key: "/admin/assets",
+      match: (path: string | null) => path === "/admin/assets",
     },
   ];
 
@@ -121,7 +139,7 @@ export const AdminNavbar = () => {
         <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
           <NavbarBrand as="li" className="gap-3 max-w-fit">
             <NextLink
-              className="flex justify-start items-center gap-2"
+              className="hidden lg:flex justify-start items-center gap-2"
               href="/admin/article"
             >
               <Image
@@ -136,33 +154,38 @@ export const AdminNavbar = () => {
         </NavbarContent>
       )}
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
+      <NavbarContent className="hidden sm:flex" justify="center">
+        <NavbarItem className="hidden sm:flex items-center gap-2">
           <ThemeSwitch />
+          {mounted && isAuth && (
+            <>
+              <Tabs selectedKey={selectedKey} variant="solid" radius="full">
+                <Tab
+                  key="/admin/article"
+                  title="管理文章"
+                  href="/admin/article"
+                />
+                <Tab
+                  key="/admin/category"
+                  title="管理分類"
+                  href="/admin/category"
+                />
+                <Tab
+                  key="/admin/assets"
+                  title="管理圖床"
+                  href="/admin/assets"
+                />
+              </Tabs>
+              <Button variant="bordered" size="sm" onPress={logout}>
+                登出
+              </Button>
+            </>
+          )}
         </NavbarItem>
-        {mounted && isAuth && (
-          <NavbarItem className="hidden md:flex">
-            <Tabs selectedKey={selectedKey} variant="solid" radius="full">
-              <Tab
-                key="/admin/article"
-                title="管理文章"
-                href="/admin/article"
-              />
-              <Tab
-                key="/admin/category"
-                title="管理分類"
-                href="/admin/category"
-              />
-            </Tabs>
-          </NavbarItem>
-        )}
       </NavbarContent>
 
       {mounted && isAuth && (
-        <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+        <NavbarContent className="sm:hidden basis-1" justify="end">
           <Tabs selectedKey={selectedKey} variant="solid" radius="full">
             <Tab key="/admin/article" title="管理文章" href="/admin/article" />
             <Tab
@@ -170,9 +193,13 @@ export const AdminNavbar = () => {
               title="管理分類"
               href="/admin/category"
             />
+            <Tab key="/admin/assets" title="管理圖床" href="/admin/assets" />
           </Tabs>
           <ThemeSwitch />
           {/* <NavbarMenuToggle /> */}
+          <Button variant="bordered" size="sm" onPress={logout}>
+            登出
+          </Button>
         </NavbarContent>
       )}
 

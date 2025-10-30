@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/button";
+import { Chip } from "@heroui/chip";
 import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 import type { BundledLanguage, BundledTheme } from "shiki";
@@ -25,9 +26,13 @@ export default function Code({
 
     (async () => {
       try {
-        const out = await codeToHtml(code, { lang, theme });
+        const out = await codeToHtml(code, {
+          lang,
+          theme,
+        });
         if (mounted) setHtml(out);
       } catch (e) {
+        console.log(e);
         if (mounted) setHtml(escapeHtmlToPre(code));
       }
     })();
@@ -56,7 +61,7 @@ export default function Code({
   }
 
   return (
-    <div className="relative">
+    <div className="relative my-4">
       <Button
         isIconOnly
         variant="flat"

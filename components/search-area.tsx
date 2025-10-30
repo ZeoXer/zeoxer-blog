@@ -107,7 +107,7 @@ export const SearchArea = () => {
           {searchResults.length > 0 ? (
             searchResults.map((article) => (
               <div key={article.id}>
-                <Card className="w-full">
+                <Card className="w-full animate-appearance-in">
                   <CardHeader className="flex-col items-start px-6 pt-6 pb-0">
                     <h3 className="text-xl font-semibold text-warning line-clamp-1">
                       {hightlightTitle(article.title)}

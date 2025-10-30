@@ -23,7 +23,7 @@ export type ArticleAnalysis = {
 export type TCategory = {
   id: number;
   name: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 export type TArticle = {
