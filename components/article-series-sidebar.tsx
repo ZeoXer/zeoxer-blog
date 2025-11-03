@@ -6,8 +6,12 @@ import NextLink from "next/link";
 import { Tooltip } from "@heroui/tooltip";
 import { TagIcon } from "./icons";
 import { useEffect, useState } from "react";
-import { getPublicArticlesByCategory } from "@/data/article";
+import {
+  getArticleCategoryById,
+  getPublicArticlesByCategory,
+} from "@/data/article";
 import { TArticle } from "@/types/article";
+import { Divider } from "@heroui/divider";
 
 interface ArticleSeriesSidebarProps {
   categoryId: number | undefined;
@@ -20,10 +24,12 @@ export const ArticleSeriesSidebar = ({
   currentArticleId,
 }: ArticleSeriesSidebarProps) => {
   const [articles, setArticles] = useState<TArticle[]>([]);
+  const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
     if (categoryId) {
       fetchArticlesByCategory(categoryId);
+      fetchCurrentCategory(categoryId);
     }
   }, [categoryId]);
 
@@ -44,10 +50,23 @@ export const ArticleSeriesSidebar = ({
     }
   };
 
+  const fetchCurrentCategory = async (categoryId: number) => {
+    try {
+      const { data } = await getArticleCategoryById(USER_NAME, categoryId);
+      setCategoryName(data.category_name);
+    } catch (error) {
+      console.error("Error fetching category:", error);
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardBody className="p-6">
-        <h2 className="text-xl font-semibold mb-4 text-foreground">系列文章</h2>
+        <h2 className="text-xl font-semibold mb-2 text-foreground">
+          {categoryName}
+        </h2>
+        <span className="text-sm text-default-700">系列文章</span>
+        <Divider className="my-2" />
         <div className="flex flex-col gap-2">
           {articles.map((article) => (
             <Tooltip

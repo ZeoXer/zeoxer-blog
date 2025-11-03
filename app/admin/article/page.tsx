@@ -124,7 +124,7 @@ export default function AdminArticlePage() {
               />
               <Button
                 as={Link}
-                href="/admin/article/0"
+                href={`/admin/article/0?category=${activeCategory}`}
                 size="lg"
                 color="warning"
                 variant="shadow"

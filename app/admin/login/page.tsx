@@ -39,7 +39,13 @@ export default function AdminLoginPage() {
         });
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      addToast({
+        title: "登入失敗",
+        description: "請檢查信箱及密碼是否正確",
+        timeout: 3000,
+        shouldShowTimeoutProgress: true,
+        color: "danger",
+      });
     }
   };
 

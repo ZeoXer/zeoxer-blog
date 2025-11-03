@@ -133,6 +133,9 @@ export default function Home() {
           </p>
         ) : articles.length > 0 ? (
           <section className="flex flex-col gap-4">
+            <h2 className="text-3xl font-bold mb-2">
+              {categories.find((cat) => cat.id === activeCategory)?.name}
+            </h2>
             <Pagination
               initialPage={currentPage}
               total={totalPages}

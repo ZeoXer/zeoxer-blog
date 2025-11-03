@@ -6,10 +6,10 @@ import {
   getArticle,
   updateArticle,
 } from "@/data/article";
-import { useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { ClipboardEvent, useEffect, useRef, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@heroui/input";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { vscodeLight, vscodeDark } from "@uiw/codemirror-theme-vscode";
@@ -43,6 +43,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/modal";
+import { uploadImageToR2 } from "@/data/image";
 
 interface TAriticleDraft {
   title: string;
@@ -51,16 +52,20 @@ interface TAriticleDraft {
 
 export default function ArticlePage() {
   const id = +(useParams().id || 0);
+  const defaultCategoryId = useSearchParams().get("category") || "";
   const draftKey = id === 0 ? "new-article-draft" : `article-draft-${id}`;
   const [draft, setDraft] = useState<TDraft<TAriticleDraft> | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPublished, setIsPublished] = useState(false);
-  const [categoryId, setCategoryId] = useState(new Set<string>([]));
+  const [categoryId, setCategoryId] = useState(
+    new Set<string>([defaultCategoryId])
+  );
   const [categories, setCategories] = useState<TCategory[]>([]);
   const { isOpen, onOpenChange } = useDisclosure();
   const { theme } = useTheme();
   const currentDataRef = useRef<TAriticleDraft>({ title, content });
+  const editorRef = useRef<ViewUpdate | null>(null);
   const draftRef = useRef<TAriticleDraft | null>(null);
   const router = useRouter();
 
@@ -200,6 +205,72 @@ export default function ArticlePage() {
     }
   };
 
+  const handleImagePaste = async (ref: ViewUpdate, event: ClipboardEvent) => {
+    const insertImageUrl = (ref: ViewUpdate, url: string) => {
+      const view = ref.view;
+      const startPos = view.state.selection.main.head;
+      view.dispatch({
+        changes: { from: startPos, insert: `![image](${url})` },
+        selection: {
+          anchor: startPos + url.length + 10,
+          head: startPos + url.length + 10,
+        },
+      });
+    };
+    const getRandomNamedFile = (file: File) => {
+      const getExt = (f: File) => {
+        if (f.name && f.name.includes(".")) {
+          return f.name.split(".").pop()!.toLowerCase();
+        }
+        const mimeExt = (f.type || "png").split("/").pop() || "png";
+        return mimeExt === "jpeg" ? "jpg" : mimeExt;
+      };
+
+      const randomHex =
+        typeof crypto !== "undefined"
+          ? Array.from(crypto.getRandomValues(new Uint8Array(6)))
+              .map((b) => b.toString(16).padStart(2, "0"))
+              .join("")
+          : Math.random().toString(36).slice(2, 8);
+
+      const ext = getExt(file);
+      const uniqueName = `image-${Date.now()}-${randomHex}.${ext}`;
+      return new File([file], uniqueName, { type: file.type });
+    };
+
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    let file: File | null = null;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) {
+        file = items[i].getAsFile();
+        break;
+      }
+    }
+
+    if (!file) return true;
+    file = getRandomNamedFile(file);
+
+    try {
+      const { status } = await uploadImageToR2(file);
+      if (status === 1) {
+        insertImageUrl(
+          ref,
+          `${process.env.NEXT_PUBLIC_R2_BUCKET_URL}/${file.name}`
+        );
+      }
+    } catch (error) {
+      addToast({
+        title: "圖片上傳失敗",
+        description: String(error),
+        timeout: 3000,
+        shouldShowTimeoutProgress: true,
+        color: "danger",
+      });
+    }
+  };
+
   const editorTheme = theme === "dark" ? vscodeDark : vscodeLight;
 
   return (
@@ -257,7 +328,7 @@ export default function ArticlePage() {
         </Button>
       </header>
       <article>
-        <Tabs variant="light" color="warning">
+        <Tabs variant="light" color="warning" destroyInactiveTabPanel={false}>
           <Tab key="editor" title={<CodeIcon className="w-6" />}>
             <Card>
               <CodeMirror
@@ -271,6 +342,8 @@ export default function ArticlePage() {
                   }),
                 ]}
                 onChange={setContent}
+                ref={editorRef}
+                onPaste={(e) => handleImagePaste(editorRef.current!, e)}
               />
             </Card>
           </Tab>

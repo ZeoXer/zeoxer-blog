@@ -30,6 +30,17 @@ export async function getAllPublicArticleCategory(authorName: string) {
   return response;
 }
 
+export async function getArticleCategoryById(
+  authorName: string,
+  categoryId: number
+) {
+  const response = await HttpClient.get<APIResponse<ArticleCategory>>(
+    `${API_ENDPOINTS.GET_CATEGORY_BY_ID}/${authorName}/${categoryId}`
+  );
+
+  return response;
+}
+
 export async function updateArticleCategory(
   categoryId: number,
   categoryName: string
@@ -39,6 +50,14 @@ export async function updateArticleCategory(
     {
       category_name: categoryName,
     }
+  );
+
+  return response;
+}
+
+export async function deleteArticleCategory(categoryId: number) {
+  const response = await HttpClient.delete<APIResponse<unknown>>(
+    `${API_ENDPOINTS.DELETE_CATEGORY}/${categoryId}`
   );
 
   return response;
@@ -125,14 +144,6 @@ export async function getPublicArticlesByCategory(
     APIResponse<{ articles: Article[]; total_page: number }>
   >(
     `${API_ENDPOINTS.GET_PUBLIC_ARTICLES_BY_CATEGORY}/${authorName}/${categoryId}?page=${page}`
-  );
-
-  return response;
-}
-
-export async function deleteArticleCategory(categoryId: number) {
-  const response = await HttpClient.delete<APIResponse<unknown>>(
-    `${API_ENDPOINTS.DELETE_CATEGORY}/${categoryId}`
   );
 
   return response;
