@@ -17,7 +17,7 @@
 ## 開發者模式
 
 ```bash
-git clone
+git clone https://github.com/ZeoXer/zeoxer-blog.git
 ```
 
 ### 安裝相關套件
