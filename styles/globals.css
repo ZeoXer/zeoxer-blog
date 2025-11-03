@@ -13,13 +13,6 @@
     }
   }
 
-  @font-face {
-    font-family: "openhuninn";
-    font-style: normal;
-    font-weight: 100 500 900;
-    src: url("@/public/jf-openhuninn-2.0.ttf") format("truetype");
-  }
-
   /* CHROME & SAFARI */
   *::-webkit-scrollbar {
     width: 7px;
