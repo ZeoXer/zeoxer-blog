@@ -42,3 +42,6 @@ bun.lockb
 .claude/
 
 .env
+
+/public/robots.txt
+/public/sitemap*.xml

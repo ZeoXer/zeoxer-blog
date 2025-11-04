@@ -8,12 +8,14 @@ import { getPublicArticle } from "@/data/article";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { TArticle } from "@/types/article";
+import { useLoading } from "@/app/use-loading";
 
 const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "ZeoXer";
 
 export default function ArticlePage() {
   const id = +(useParams().id || 0);
   const [article, setArticle] = useState<TArticle>();
+  const { setIsLoading } = useLoading();
 
   useEffect(() => {
     fetchArticle(id);
@@ -25,6 +27,7 @@ export default function ArticlePage() {
   };
 
   const fetchArticle = async (articleId: number) => {
+    setIsLoading(true);
     try {
       const { data } = await getPublicArticle(articleId, USER_NAME);
       const formattedArticle: TArticle = {
@@ -38,6 +41,8 @@ export default function ArticlePage() {
       setArticle(formattedArticle);
     } catch (error) {
       console.error("Error fetching article:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

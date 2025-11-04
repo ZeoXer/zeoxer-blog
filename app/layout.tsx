@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import RootLayoutWrapper from "./root-layout-wrapper";
+import { LoadingProvider } from "./use-loading";
 
 export const metadata: Metadata = {
   title: {
@@ -41,7 +42,9 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <RootLayoutWrapper>{children}</RootLayoutWrapper>
+          <LoadingProvider>
+            <RootLayoutWrapper>{children}</RootLayoutWrapper>
+          </LoadingProvider>
         </Providers>
       </body>
     </html>

@@ -17,6 +17,7 @@ import {
 } from "@/data/article";
 import { TCategory } from "@/types/article";
 import { useCategory } from "./use-category";
+import { Skeleton } from "@heroui/skeleton";
 
 const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
 
@@ -134,7 +135,13 @@ export default function Home() {
         ) : articles.length > 0 ? (
           <section className="flex flex-col gap-4">
             <h2 className="text-3xl font-bold mb-2">
-              {categories.find((cat) => cat.id === activeCategory)?.name}
+              {loading ? (
+                <Skeleton className="w-4/5 rounded-lg">
+                  <div className="h-5 w-4/5 rounded-lg bg-default-200" />
+                </Skeleton>
+              ) : (
+                categories.find((cat) => cat.id === activeCategory)?.name
+              )}
             </h2>
             <Pagination
               initialPage={currentPage}
