@@ -9,7 +9,7 @@ import {
 import { ClipboardEvent, useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@heroui/input";
-import CodeMirror, { ViewUpdate } from "@uiw/react-codemirror";
+import CodeMirror, { EditorView, ViewUpdate } from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { vscodeLight, vscodeDark } from "@uiw/codemirror-theme-vscode";
@@ -44,6 +44,7 @@ import {
   useDisclosure,
 } from "@heroui/modal";
 import { uploadImageToR2 } from "@/data/image";
+import { useLoading } from "@/app/use-loading";
 
 interface TAriticleDraft {
   title: string;
@@ -64,6 +65,7 @@ export default function ArticlePage() {
   const [categories, setCategories] = useState<TCategory[]>([]);
   const { isOpen, onOpenChange } = useDisclosure();
   const { theme } = useTheme();
+  const { setIsLoading } = useLoading();
   const currentDataRef = useRef<TAriticleDraft>({ title, content });
   const editorRef = useRef<ViewUpdate | null>(null);
   const draftRef = useRef<TAriticleDraft | null>(null);
@@ -90,7 +92,7 @@ export default function ArticlePage() {
       if (draftRef.current === currentDataRef.current) return;
       saveDraft(draftKey, currentDataRef.current);
       setDraft({ data: currentDataRef.current, updatedAt: Date.now() });
-    }, 10000);
+    }, 5000);
 
     return () => {
       clearInterval(intervalId);
@@ -113,6 +115,7 @@ export default function ArticlePage() {
   };
 
   const fetchArticle = async (articleId: number) => {
+    setIsLoading(true);
     try {
       const { data } = await getArticle(articleId);
       setTitle(data.title);
@@ -121,6 +124,8 @@ export default function ArticlePage() {
       setIsPublished(data.is_published);
     } catch (error) {
       console.error("Error fetching article:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,6 +160,7 @@ export default function ArticlePage() {
 
   const handleArticleSave = async () => {
     if (!checkArticleDataValid()) return;
+    setIsLoading(true);
 
     const responseAction = (status: number, type: "add" | "update") => {
       if (status === 1) {
@@ -188,6 +194,8 @@ export default function ArticlePage() {
         responseAction(status, "add");
       } catch (error) {
         console.error("Error saving article:", error);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       try {
@@ -201,6 +209,8 @@ export default function ArticlePage() {
         responseAction(status, "update");
       } catch (error) {
         console.error("Error updating article:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -334,12 +344,15 @@ export default function ArticlePage() {
               <CodeMirror
                 value={content}
                 theme={editorTheme}
-                className="min-h-[300px] max-h-[650px] overflow-y-auto"
+                minHeight="300px"
+                maxHeight="650px"
+                className="overflow-y-auto"
                 extensions={[
                   markdown({
                     base: markdownLanguage,
                     codeLanguages: languages,
                   }),
+                  EditorView.lineWrapping,
                 ]}
                 onChange={setContent}
                 ref={editorRef}
