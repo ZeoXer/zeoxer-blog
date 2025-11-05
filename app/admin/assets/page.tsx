@@ -1,5 +1,6 @@
 "use client";
 
+import { useLoading } from "@/app/use-loading";
 import { AdminAssetsList } from "@/components/admin-assets-list";
 import { GoOutIcon, UploadIcon } from "@/components/icons";
 import { listImagesInBucket, uploadImageToR2 } from "@/data/image";
@@ -10,14 +11,28 @@ import { useEffect, useState } from "react";
 
 export default function AdminAssetsPage() {
   const [objects, setObjects] = useState<R2Object[]>([]);
+  const { setIsLoading } = useLoading();
 
   useEffect(() => {
     listBucketAssets();
   }, []);
 
   const listBucketAssets = async () => {
-    const { data } = await listImagesInBucket();
-    setObjects(data);
+    setIsLoading(true);
+    try {
+      const { data } = await listImagesInBucket();
+      setObjects(data);
+    } catch (error) {
+      addToast({
+        title: "載入圖片失敗",
+        description: String(error),
+        timeout: 3000,
+        shouldShowTimeoutProgress: true,
+        color: "danger",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleUploadImage = async (
@@ -55,7 +70,7 @@ export default function AdminAssetsPage() {
               上傳圖片
             </label>
           </Button>
-          <Button
+          {/* <Button
             as={Link}
             href="https://blog-assets.zeoxer.com/"
             target="_blank"
@@ -63,7 +78,7 @@ export default function AdminAssetsPage() {
             startContent={<GoOutIcon className="w-5" />}
           >
             Cloudreve
-          </Button>
+          </Button> */}
         </div>
         <input
           type="file"

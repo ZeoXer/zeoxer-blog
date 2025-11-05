@@ -34,7 +34,13 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="zh-TW">
-      <head />
+      <head>
+        <script
+          defer
+          src="https://blog-statistic.zeoxer.com/script.js"
+          data-website-id="55ecf8df-5056-4a3f-947c-e898f496e3e3"
+        ></script>
+      </head>
       <body
         className={clsx(
           "min-h-screen text-foreground bg-background font-sans antialiased",

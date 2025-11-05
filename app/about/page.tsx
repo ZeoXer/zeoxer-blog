@@ -7,6 +7,7 @@ import {
   DocumentIcon,
   EmailIcon,
   GithubIcon,
+  LinkedInIcon,
 } from "@/components/icons";
 import { Divider } from "@heroui/divider";
 import { siteConfig } from "@/config/site";
@@ -53,9 +54,15 @@ export default function AboutPage() {
                 <EmailIcon className="w-7 h-7" />
                 <span>andrew17413@gmail.com</span>
               </Link>
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <Link href="https://github.com/ZeoXer" isExternal>
                   <GithubIcon className="w-7 h-7 text-default-800 hover:text-warning transition-colors" />
+                </Link>
+                <Link
+                  href="https://www.linkedin.com/in/chia-hsun-yang"
+                  isExternal
+                >
+                  <LinkedInIcon className="w-7 h-7 text-default-800 hover:text-warning transition-colors" />
                 </Link>
               </div>
             </div>
