@@ -93,6 +93,9 @@ const MarkdownDisplay = ({ content }: { content: string }) => {
         li(props) {
           return <li className="list-disc ml-6" {...props} />;
         },
+        img(props) {
+          return <img className="my-8" {...props} />;
+        },
         code(props) {
           const { children, className, ...rest } = props;
           const match = /language-(\w+)/.exec(className || "");
