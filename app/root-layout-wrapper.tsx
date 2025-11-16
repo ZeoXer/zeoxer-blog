@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { AdminNavbar, Navbar } from "@/components/navbar";
 import { PageFooter } from "@/components/page-footer";
@@ -16,6 +16,25 @@ export default function RootLayoutWrapper({
   const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");
   const { isLoading } = useLoading();
+  const cursorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!window || !cursorRef.current) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!cursorRef.current) return;
+      const x = e.clientX;
+      const y = e.clientY;
+      cursorRef.current!.style.left = x - 20 + "px";
+      cursorRef.current!.style.top = y - 20 + "px";
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   return (
     <CategoryProvider>
@@ -31,6 +50,10 @@ export default function RootLayoutWrapper({
         </main>
         {!isAdmin && <PageFooter year={new Date().getFullYear()} />}
       </div>
+      <div
+        className="w-10 h-10 rounded-full bg-warning opacity-40 fixed pointer-events-none z-[100] shadow-md"
+        ref={cursorRef}
+      />
       {isLoading && <FullPageLoading />}
     </CategoryProvider>
   );
