@@ -1,15 +1,19 @@
 import { getPublicArticle } from "@/data/article";
+import ArticlePage from "./page";
+import { TArticle } from "@/types/article";
+import { cache } from "react";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-const fetchArticle = async (id: number) => {
+const fetchArticle = cache(async (id: number): Promise<TArticle> => {
   try {
     const { data } = await getPublicArticle(id, "ZeoXer");
     return {
       id: data.id,
       title: data.title,
+      categoryId: data.category_id,
       content: data.content,
       excerpt: data.content.slice(0, 100) + "...",
       lastUpdated: new Date(data.updated_at).toLocaleDateString(),
@@ -19,27 +23,22 @@ const fetchArticle = async (id: number) => {
     return {
       id: 0,
       title: "Article Not Found",
+      categoryId: 0,
       content: "",
       excerpt: "The requested article could not be found.",
       lastUpdated: "",
     };
   }
-};
+});
 
-export default async function ArticleLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ id: string }>;
-}) {
+export default async function ArticleLayout({ params }: PageProps) {
   const { id } = await params;
 
   const article = await fetchArticle(+id);
 
   return (
     <main>
-      {children}
+      <ArticlePage article={article} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
