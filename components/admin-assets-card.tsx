@@ -31,7 +31,7 @@ export const AdminAssetsCard = ({ asset }: { asset: R2Object }) => {
         <CardBody>
           <div className="flex hover:underline justify-between items-center">
             <h3 className="line-clamp-1">{asset.key.split("/").pop()}</h3>
-            <GoOutIcon className="w-5" />
+            <GoOutIcon className="w-5 shrink-0" />
           </div>
         </CardBody>
       </Card>

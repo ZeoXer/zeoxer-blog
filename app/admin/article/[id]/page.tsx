@@ -3,18 +3,12 @@
 import {
   addArticle,
   getAllArticleCategory,
-  getArticle,
   updateArticle,
 } from "@/data/article";
-import { ClipboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@heroui/input";
-import CodeMirror, { EditorView, ViewUpdate } from "@uiw/react-codemirror";
-import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
-import { languages } from "@codemirror/language-data";
-import { vscodeLight, vscodeDark } from "@uiw/codemirror-theme-vscode";
 import MarkdownDisplay from "@/components/markdown-display";
-import { useTheme } from "next-themes";
 import { Card } from "@heroui/card";
 import { Tabs, Tab } from "@heroui/tabs";
 import {
@@ -31,50 +25,43 @@ import {
   SaveIcon,
 } from "@/components/icons";
 import { Button } from "@heroui/button";
-import { TCategory } from "@/types/article";
+import { TArticle, TCategory } from "@/types/article";
 import { addToast } from "@heroui/toast";
 import { readDraft, saveDraft, deleteDraft, TDraft } from "./use-draft";
 import { Chip } from "@heroui/chip";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@heroui/modal";
-import { uploadImageToR2 } from "@/data/image";
+import { useDisclosure } from "@heroui/modal";
 import { useLoading } from "@/app/use-loading";
+import { CodeEditor } from "@/components/code-editor";
+import AdminArticleDraftModal from "./draft-modal";
 
 interface TAriticleDraft {
   title: string;
   content: string;
 }
 
-export default function ArticlePage() {
+export default function AdminArticleEditPage({
+  article,
+}: {
+  article: TArticle;
+}) {
   const id = +(useParams().id || 0);
-  const defaultCategoryId = useSearchParams().get("category") || "";
+  const defaultCategoryId =
+    useSearchParams().get("category") || article.categoryId.toString();
   const draftKey = id === 0 ? "new-article-draft" : `article-draft-${id}`;
   const [draft, setDraft] = useState<TDraft<TAriticleDraft> | null>(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [isPublished, setIsPublished] = useState(false);
+  const [title, setTitle] = useState(article.title);
+  const [content, setContent] = useState(article.content);
   const [categoryId, setCategoryId] = useState(
     new Set<string>([defaultCategoryId])
   );
   const [categories, setCategories] = useState<TCategory[]>([]);
   const { isOpen, onOpenChange } = useDisclosure();
-  const { theme } = useTheme();
   const { setIsLoading } = useLoading();
   const currentDataRef = useRef<TAriticleDraft>({ title, content });
-  const editorRef = useRef<ViewUpdate | null>(null);
   const draftRef = useRef<TAriticleDraft | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (id !== 0) {
-      fetchArticle(id);
-    }
     fetchArticleCategories();
     handleDraftLoad();
   }, [id]);
@@ -112,21 +99,6 @@ export default function ArticlePage() {
     setTitle(draft.data.title);
     setContent(draft.data.content);
     onOpenChange();
-  };
-
-  const fetchArticle = async (articleId: number) => {
-    setIsLoading(true);
-    try {
-      const { data } = await getArticle(articleId);
-      setTitle(data.title);
-      setContent(data.content);
-      setCategoryId(new Set([String(data.category_id)]));
-      setIsPublished(data.is_published);
-    } catch (error) {
-      console.error("Error fetching article:", error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const fetchArticleCategories = async () => {
@@ -184,104 +156,30 @@ export default function ArticlePage() {
       }
     };
 
-    if (id === 0) {
-      try {
+    try {
+      if (id === 0) {
         const { status } = await addArticle(
           title.trim(),
           content.trim(),
           Number(Array.from(categoryId)[0])
         );
         responseAction(status, "add");
-      } catch (error) {
-        console.error("Error saving article:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      try {
+      } else {
         const { status } = await updateArticle(
           id,
           title.trim(),
           content.trim(),
-          isPublished,
+          !!article.isPublished,
           Number(Array.from(categoryId)[0])
         );
         responseAction(status, "update");
-      } catch (error) {
-        console.error("Error updating article:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const handleImagePaste = async (ref: ViewUpdate, event: ClipboardEvent) => {
-    const insertImageUrl = (ref: ViewUpdate, url: string) => {
-      const view = ref.view;
-      const startPos = view.state.selection.main.head;
-      view.dispatch({
-        changes: { from: startPos, insert: `![image](${url})` },
-        selection: {
-          anchor: startPos + url.length + 10,
-          head: startPos + url.length + 10,
-        },
-      });
-    };
-    const getRandomNamedFile = (file: File) => {
-      const getExt = (f: File) => {
-        if (f.name && f.name.includes(".")) {
-          return f.name.split(".").pop()!.toLowerCase();
-        }
-        const mimeExt = (f.type || "png").split("/").pop() || "png";
-        return mimeExt === "jpeg" ? "jpg" : mimeExt;
-      };
-
-      const randomHex =
-        typeof crypto !== "undefined"
-          ? Array.from(crypto.getRandomValues(new Uint8Array(6)))
-              .map((b) => b.toString(16).padStart(2, "0"))
-              .join("")
-          : Math.random().toString(36).slice(2, 8);
-
-      const ext = getExt(file);
-      const uniqueName = `image-${Date.now()}-${randomHex}.${ext}`;
-      return new File([file], uniqueName, { type: file.type });
-    };
-
-    const items = event.clipboardData?.items;
-    if (!items) return;
-
-    let file: File | null = null;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.startsWith("image/")) {
-        file = items[i].getAsFile();
-        break;
-      }
-    }
-
-    if (!file) return true;
-    file = getRandomNamedFile(file);
-
-    try {
-      const { status } = await uploadImageToR2(file);
-      if (status === 1) {
-        insertImageUrl(
-          ref,
-          `${process.env.NEXT_PUBLIC_R2_BUCKET_URL}/${file.name}`
-        );
       }
     } catch (error) {
-      addToast({
-        title: "圖片上傳失敗",
-        description: String(error),
-        timeout: 3000,
-        shouldShowTimeoutProgress: true,
-        color: "danger",
-      });
+      responseAction(0, id === 0 ? "add" : "update");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const editorTheme = theme === "dark" ? vscodeDark : vscodeLight;
 
   return (
     <section>
@@ -341,23 +239,7 @@ export default function ArticlePage() {
         <Tabs variant="light" color="warning" destroyInactiveTabPanel={false}>
           <Tab key="editor" title={<CodeIcon className="w-6" />}>
             <Card>
-              <CodeMirror
-                value={content}
-                theme={editorTheme}
-                minHeight="300px"
-                maxHeight="650px"
-                className="overflow-y-auto"
-                extensions={[
-                  markdown({
-                    base: markdownLanguage,
-                    codeLanguages: languages,
-                  }),
-                  EditorView.lineWrapping,
-                ]}
-                onChange={setContent}
-                ref={editorRef}
-                onPaste={(e) => handleImagePaste(editorRef.current!, e)}
-              />
+              <CodeEditor content={content} setContent={setContent} />
             </Card>
           </Tab>
           <Tab key="preview" title={<EyeIcon className="w-6" />}>
@@ -377,44 +259,12 @@ export default function ArticlePage() {
           </Chip>
         )}
       </div>
-      <Modal
+      <AdminArticleDraftModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        isDismissable={false}
-        isKeyboardDismissDisabled={true}
-        backdrop="blur"
-      >
-        <ModalContent className="p-2">
-          {(onClose) => (
-            <>
-              <ModalHeader>
-                <h2 className="text-lg font-semibold">偵測到未存檔草稿</h2>
-              </ModalHeader>
-              <ModalBody>
-                <p>
-                  偵測到草稿儲存於
-                  <span className="ml-1 font-semibold">
-                    {draft
-                      ? new Date(draft.updatedAt).toLocaleTimeString("en-US", {
-                          timeZone: "Asia/Taipei",
-                        })
-                      : "未知時間"}
-                  </span>
-                  ，是否將草稿覆蓋當前文章內容？
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button onPress={onClose} variant="light">
-                  關閉
-                </Button>
-                <Button onPress={coverDraft} color="warning">
-                  確認覆蓋
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        draft={draft}
+        coverDraft={coverDraft}
+      />
     </section>
   );
 }

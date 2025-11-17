@@ -1,42 +1,37 @@
 import { API_ENDPOINTS } from "@/data/client/endpoints";
 import { getAuthTokenServer } from "@/data/server/token";
 import axios from "axios";
+import AdminArticleEditPage from "./page";
+import { TArticle } from "@/types/article";
+import { cache } from "react";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function ArticleLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <main>{children}</main>;
-}
-
-const errorArticle = {
-  id: 0,
-  title: "Article Not Found",
-  content: "",
-  excerpt: "The requested article could not be found.",
-  lastUpdated: "",
+const specialArticles: { [key: string]: TArticle } = {
+  new: {
+    id: 0,
+    title: "新文章",
+    categoryId: 0,
+    content: "",
+    excerpt: "這是一篇新文章。",
+    lastUpdated: "",
+  },
+  error: {
+    id: 0,
+    title: "Article Not Found",
+    categoryId: 0,
+    content: "",
+    excerpt: "The requested article could not be found.",
+    lastUpdated: "",
+  },
 };
 
-const newArticle = {
-  id: 0,
-  title: "新文章",
-  content: "",
-  excerpt: "這是一篇新文章。",
-  lastUpdated: "",
-};
-
-export async function generateMetadata({ params }: PageProps) {
-  const { id } = await params;
-  const token = await getAuthTokenServer();
-
-  const fetchArticle = async () => {
+const fetchArticle = cache(
+  async (id: string, token?: string): Promise<TArticle> => {
     if (id === "0") {
-      return newArticle;
+      return specialArticles.new;
     }
 
     try {
@@ -55,17 +50,37 @@ export async function generateMetadata({ params }: PageProps) {
       return {
         id: data.id,
         title: data.title,
+        categoryId: data.category_id,
         content: data.content,
         excerpt: data.content.slice(0, 100) + "...",
         lastUpdated: new Date(data.updated_at).toLocaleDateString(),
+        isPublished: data.is_published,
       };
     } catch (error) {
       console.error("Error fetching article for metadata:", error);
-      return errorArticle;
+      return specialArticles.error;
     }
-  };
+  }
+);
 
-  const article = await fetchArticle();
+export default async function ArticleLayout({ params }: PageProps) {
+  const { id } = await params;
+  const token = await getAuthTokenServer();
+
+  const article = await fetchArticle(id, token);
+
+  return (
+    <main>
+      <AdminArticleEditPage article={article} />
+    </main>
+  );
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { id } = await params;
+  const token = await getAuthTokenServer();
+
+  const article = await fetchArticle(id, token);
 
   return {
     title: article.title,
