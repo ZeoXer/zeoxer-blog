@@ -34,21 +34,23 @@ import { useLoading } from "@/app/use-loading";
 import { CodeEditor } from "@/components/code-editor";
 import AdminArticleDraftModal from "./draft-modal";
 
-interface TAriticleDraft {
+interface TArticleDraft {
   title: string;
   content: string;
 }
 
+interface AdminArticleEditPageProps {
+  article: TArticle;
+}
+
 export default function AdminArticleEditPage({
   article,
-}: {
-  article: TArticle;
-}) {
+}: AdminArticleEditPageProps) {
   const id = +(useParams().id || 0);
   const defaultCategoryId =
     useSearchParams().get("category") || article.categoryId.toString();
   const draftKey = id === 0 ? "new-article-draft" : `article-draft-${id}`;
-  const [draft, setDraft] = useState<TDraft<TAriticleDraft> | null>(null);
+  const [draft, setDraft] = useState<TDraft<TArticleDraft> | null>(null);
   const [title, setTitle] = useState(article.title);
   const [content, setContent] = useState(article.content);
   const [categoryId, setCategoryId] = useState(
@@ -57,8 +59,8 @@ export default function AdminArticleEditPage({
   const [categories, setCategories] = useState<TCategory[]>([]);
   const { isOpen, onOpenChange } = useDisclosure();
   const { setIsLoading } = useLoading();
-  const currentDataRef = useRef<TAriticleDraft>({ title, content });
-  const draftRef = useRef<TAriticleDraft | null>(null);
+  const currentDataRef = useRef<TArticleDraft>({ title, content });
+  const draftRef = useRef<TArticleDraft | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function AdminArticleEditPage({
   }, [draftKey]);
 
   const handleDraftLoad = async () => {
-    const draft = await readDraft<TAriticleDraft>(draftKey);
+    const draft = await readDraft<TArticleDraft>(draftKey);
     if (draft) {
       setDraft(draft);
       onOpenChange();

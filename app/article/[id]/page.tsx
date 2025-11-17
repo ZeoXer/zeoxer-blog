@@ -5,7 +5,6 @@ import { ArticleSeriesSidebar } from "@/components/article-series-sidebar";
 import { ArticleTocSidebar } from "@/components/article-toc-sidebar";
 import { ArticleContent } from "@/components/article-content";
 import { TArticle } from "@/types/article";
-import { useLoading } from "@/app/use-loading";
 
 export default function ArticlePage({ article }: { article: TArticle }) {
   return (
