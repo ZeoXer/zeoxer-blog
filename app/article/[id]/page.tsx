@@ -3,6 +3,8 @@ import ArticleDisplay from "./article-display";
 import { TArticle } from "@/types/article";
 import { cache } from "react";
 
+export const dynamic = "force-static";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

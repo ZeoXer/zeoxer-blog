@@ -3,6 +3,8 @@ import Home from "./home";
 import { getAllPublicArticleCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
 
+export const dynamic = "force-static";
+
 const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
 
 const fetchArticleCategories = async (): Promise<TCategory[]> => {
