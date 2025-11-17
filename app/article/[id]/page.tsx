@@ -1,28 +1,78 @@
-"use client";
-
-import { MainLayout } from "@/components/main-layout";
-import { ArticleSeriesSidebar } from "@/components/article-series-sidebar";
-import { ArticleTocSidebar } from "@/components/article-toc-sidebar";
-import { ArticleContent } from "@/components/article-content";
+import { getPublicArticle } from "@/data/article";
+import ArticleDisplay from "./article-display";
 import { TArticle } from "@/types/article";
+import { cache } from "react";
 
-export default function ArticlePage({ article }: { article: TArticle }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+const fetchArticle = cache(async (id: number): Promise<TArticle> => {
+  try {
+    const { data } = await getPublicArticle(id, "ZeoXer");
+    return {
+      id: data.id,
+      title: data.title,
+      categoryId: data.category_id,
+      content: data.content,
+      excerpt: data.content.slice(0, 100) + "...",
+      lastUpdated: new Date(data.updated_at).toLocaleDateString(),
+    };
+  } catch (error) {
+    console.error("Error fetching article for metadata:", error);
+    return {
+      id: 0,
+      title: "Article Not Found",
+      categoryId: 0,
+      content: "",
+      excerpt: "The requested article could not be found.",
+      lastUpdated: "",
+    };
+  }
+});
+
+export default async function ArticlePage({ params }: PageProps) {
+  const { id } = await params;
+
+  const article = await fetchArticle(+id);
+
   return (
-    <MainLayout
-      leftSidebar={
-        <ArticleSeriesSidebar
-          categoryId={article?.categoryId}
-          currentArticleId={article.id}
-        />
-      }
-      rightSidebar={<ArticleTocSidebar article={article} />}
-      lgLayoutRatio="lg:grid-cols-[20%_1fr_20%]"
-    >
-      <ArticleContent
-        title={article?.title || ""}
-        lastUpdated={article?.lastUpdated || ""}
-        content={article?.content || ""}
+    <main>
+      <ArticleDisplay article={article} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "http://schema.org",
+            "@type": "Article",
+            headline: article.title,
+            url: "https://blog.zeoxer.com/article/" + id,
+            dateModified: article.lastUpdated,
+            author: { "@type": "Person", name: "ZeoXer" },
+          }),
+        }}
       />
-    </MainLayout>
+    </main>
   );
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { id } = await params;
+
+  const article = await fetchArticle(+id);
+
+  return {
+    title: article.title,
+    description: `${article.excerpt}`,
+    icons: {
+      icon: "/zeoxers-blog-logo-transparent.svg",
+    },
+    openGraph: {
+      title: article.title,
+      description: article.excerpt,
+      type: "article",
+      url: "https://blog.zeoxer.com/article/" + id,
+      siteName: "ZeoXer's Blog",
+    },
+  };
 }
