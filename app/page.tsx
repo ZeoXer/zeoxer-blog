@@ -3,7 +3,7 @@ import Home from "./home";
 import { getAllPublicArticleCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
 
-export const dynamic = "force-static";
+export const revalidate = 0;
 
 const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
 

@@ -9,6 +9,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@heroui/popover";
 import { CheckIcon, EditIcon, TrashIcon, XIcon } from "./icons";
 import { updateArticleCategory } from "@/data/article";
 import { addToast } from "@heroui/toast";
+import { revalidatePath } from "next/cache";
 
 interface AdminBlogCategoryCardProps {
   category: TCategory;
@@ -52,6 +53,7 @@ export const AdminBlogCategoryCard = ({
           color: "success",
         });
         category.name = name;
+        revalidatePath("/");
       }
     } catch (error) {
       addToast({
