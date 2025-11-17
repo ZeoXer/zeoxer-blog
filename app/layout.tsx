@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: {
-    icon: "/zeoxers-blog-logo-transparent.svg",
+    icon: "/favicon.ico",
   },
 };
 

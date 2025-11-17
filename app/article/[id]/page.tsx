@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: article.title,
     description: `${article.excerpt}`,
     icons: {
-      icon: "/zeoxers-blog-logo-transparent.svg",
+      icon: "/favicon.ico",
     },
     openGraph: {
       title: article.title,
