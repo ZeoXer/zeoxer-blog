@@ -33,7 +33,6 @@ import { useDisclosure } from "@heroui/modal";
 import { useLoading } from "@/app/use-loading";
 import { CodeEditor } from "@/components/code-editor";
 import AdminArticleDraftModal from "./draft-modal";
-import { revalidatePath } from "next/cache";
 
 interface TArticleDraft {
   title: string;
@@ -170,7 +169,6 @@ export default function AdminArticleEdit({ article }: { article: TArticle }) {
           Number(Array.from(categoryId)[0])
         );
         responseAction(status, "update");
-        revalidatePath(`/article/${id}`);
       }
     } catch (error) {
       responseAction(0, id === 0 ? "add" : "update");
