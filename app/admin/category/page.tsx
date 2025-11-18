@@ -9,7 +9,6 @@ import {
 } from "@/data/article";
 import { TCategory } from "@/types/article";
 import { addToast } from "@heroui/toast";
-import { revalidatePath } from "next/cache";
 import { useEffect, useState } from "react";
 
 export default function CategoryPage() {
@@ -41,7 +40,6 @@ export default function CategoryPage() {
           shouldShowTimeoutProgress: true,
           color: "success",
         });
-        revalidatePath("/");
       }
     } catch (error) {
       addToast({
@@ -79,7 +77,6 @@ export default function CategoryPage() {
             shouldShowTimeoutProgress: true,
             color: "success",
           });
-          revalidatePath("/");
         }
       } catch (error) {
         addToast({
