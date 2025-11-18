@@ -32,6 +32,9 @@ export default function CategoryPage() {
     try {
       const { status } = await addArticleCategory(categoryName);
       if (status === 1) {
+        await fetch("/api/revalidate-home", {
+          method: "POST",
+        });
         fetchArticleCategories();
         addToast({
           title: "分類新增成功",
@@ -68,6 +71,9 @@ export default function CategoryPage() {
       try {
         const { status } = await deleteArticleCategory(categoryId);
         if (status === 1) {
+          await fetch("/api/revalidate-home", {
+            method: "POST",
+          });
           setCategories(
             categories.filter((category) => category.id !== categoryId)
           );

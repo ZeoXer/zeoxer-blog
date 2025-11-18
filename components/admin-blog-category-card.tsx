@@ -44,6 +44,9 @@ export const AdminBlogCategoryCard = ({
     try {
       const { status } = await updateArticleCategory(category.id, name);
       if (status === 1) {
+        await fetch("/api/revalidate-home", {
+          method: "POST",
+        });
         addToast({
           title: "分類更新成功",
           description: `${category.name} ➔ ${name}`,

@@ -11,7 +11,6 @@ export async function addArticleCategory(categoryName: string) {
       category_name: categoryName,
     }
   );
-  revalidatePath("/", "page");
 
   return response;
 }
@@ -53,7 +52,6 @@ export async function updateArticleCategory(
       category_name: categoryName,
     }
   );
-  revalidatePath("/", "page");
 
   return response;
 }
@@ -62,7 +60,6 @@ export async function deleteArticleCategory(categoryId: number) {
   const response = await HttpClient.delete<APIResponse<unknown>>(
     `${API_ENDPOINTS.DELETE_CATEGORY}/${categoryId}`
   );
-  revalidatePath("/", "page");
 
   return response;
 }
@@ -116,7 +113,6 @@ export async function updateArticle(
       category_id: categoryId,
     }
   );
-  revalidatePath(`/article/${articleId}`);
 
   return response;
 }

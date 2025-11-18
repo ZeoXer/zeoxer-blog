@@ -130,8 +130,14 @@ export default function AdminArticleEdit({ article }: { article: TArticle }) {
     if (!checkArticleDataValid()) return;
     setIsLoading(true);
 
-    const responseAction = (status: number, type: "add" | "update") => {
+    const responseAction = async (status: number, type: "add" | "update") => {
       if (status === 1) {
+        if (type === "update") {
+          await fetch("/api/revalidate-article", {
+            method: "POST",
+            body: JSON.stringify({ id }),
+          });
+        }
         router.replace("/admin/article");
         deleteDraft(draftKey);
         addToast({
