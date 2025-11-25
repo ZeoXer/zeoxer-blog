@@ -5,24 +5,28 @@ import { ArticleSeriesSidebar } from "@/components/article-series-sidebar";
 import { ArticleTocSidebar } from "@/components/article-toc-sidebar";
 import { ArticleContent } from "@/components/article-content";
 import { TArticle } from "@/types/article";
+import { BackToTop } from "@/components/back-to-top";
 
 export default function ArticleDisplay({ article }: { article: TArticle }) {
   return (
-    <MainLayout
-      leftSidebar={
-        <ArticleSeriesSidebar
-          categoryId={article?.categoryId}
-          currentArticleId={article.id}
+    <>
+      <MainLayout
+        leftSidebar={
+          <ArticleSeriesSidebar
+            categoryId={article?.categoryId}
+            currentArticleId={article.id}
+          />
+        }
+        rightSidebar={<ArticleTocSidebar article={article} />}
+        lgLayoutRatio="lg:grid-cols-[20%_1fr_20%]"
+      >
+        <ArticleContent
+          title={article?.title || ""}
+          lastUpdated={article?.lastUpdated || ""}
+          content={article?.content || ""}
         />
-      }
-      rightSidebar={<ArticleTocSidebar article={article} />}
-      lgLayoutRatio="lg:grid-cols-[20%_1fr_20%]"
-    >
-      <ArticleContent
-        title={article?.title || ""}
-        lastUpdated={article?.lastUpdated || ""}
-        content={article?.content || ""}
-      />
-    </MainLayout>
+      </MainLayout>
+      <BackToTop />
+    </>
   );
 }

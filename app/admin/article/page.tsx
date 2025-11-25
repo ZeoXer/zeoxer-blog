@@ -4,6 +4,8 @@ import axios from "axios";
 import { API_ENDPOINTS } from "@/data/client/endpoints";
 import { getAuthTokenServer } from "@/data/server/token";
 import { ArticleCategory } from "@/types/article";
+import { redirect } from "next/navigation";
+import { clearAuthToken } from "@/data/client/token";
 
 const fetchArticleCategories = async () => {
   const token = await getAuthTokenServer();
@@ -30,7 +32,8 @@ const fetchArticleCategories = async () => {
     return formattedCategories;
   } catch (error) {
     console.error("Error fetching article categories:", error);
-    return [];
+    clearAuthToken();
+    redirect("/admin/login");
   }
 };
 

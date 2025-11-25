@@ -21,6 +21,7 @@ import { clearAuthToken, isAuthenticated } from "@/data/client/token";
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
+import { Link } from "@heroui/link";
 
 export const Navbar = () => {
   const { theme } = useTheme();
@@ -176,6 +177,9 @@ export const AdminNavbar = () => {
                   href="/admin/assets"
                 />
               </Tabs>
+              <Button as={Link} color="warning" size="sm" href="/">
+                去前台
+              </Button>
               <Button variant="bordered" size="sm" onPress={logout}>
                 登出
               </Button>

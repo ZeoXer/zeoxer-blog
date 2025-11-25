@@ -9,6 +9,30 @@ export const siteConfig = {
   亦利用在學和空餘時間研究其餘領域的技術，包含自行架設部落格網站、研究簡易 RAG、AI Agent 等系統。
   在現今 AI 發展迅速的時代，也將持續精進相關知識和技能以期在變動頻繁的環境裡具備快速適應的能力。
   `,
+  skills: {
+    backend: [
+      { name: "Python", level: 92 },
+      { name: "Golang", level: 81 },
+      { name: "Node.js", level: 84 },
+      { name: "MySQL", level: 78 },
+    ],
+    frontend: [
+      { name: "HTML/CSS/JS", level: 94 },
+      { name: "TypeScript", level: 88 },
+      { name: "React/Next.js", level: 91 },
+      { name: "TailwindCSS", level: 82 },
+    ],
+    tool: [
+      { name: "Git/GitHub", level: 90 },
+      { name: "Docker", level: 85 },
+      { name: "Vite", level: 81 },
+    ],
+    service: [
+      { name: "AWS EC2", level: 76 },
+      { name: "Zeabur", level: 77 },
+      { name: "Cloudflare R2", level: 75 },
+    ],
+  },
   workExperience: [
     {
       company: "六角學院",

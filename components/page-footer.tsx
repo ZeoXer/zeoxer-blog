@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 
 interface PageFooterProps {
   year?: number;
@@ -14,11 +14,12 @@ export const PageFooter = ({
     <footer className="w-full border-t border-divider py-6 mt-16">
       <div className="flex flex-col items-center gap-4">
         <p className="text-default-600">
-          Copyright© {year} ZeoXer. All Rights Reserved.
+          Copyright© {year}{" "}
+          <Link href="/admin/article" color="foreground" underline="hover">
+            ZeoXer
+          </Link>
+          . All Rights Reserved.
         </p>
-        {/* <Button variant="bordered" size="md" onPress={onAdminClick}>
-          管理者登入
-        </Button> */}
       </div>
     </footer>
   );

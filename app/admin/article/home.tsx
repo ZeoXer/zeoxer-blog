@@ -90,38 +90,38 @@ export default function AdminHome({ categories }: { categories: TCategory[] }) {
         }}
       />
       {/* Blog Post List */}
-      {activeCategory ? (
-        articles.length > 0 ? (
-          <section className="flex flex-col gap-4">
-            <header className="flex items-center justify-between">
-              <Pagination
-                initialPage={currentPage}
-                total={totalPages}
-                showControls
-                color="warning"
-                size="lg"
-                className="cursor-pointer"
-                onChange={setCurrentPage}
-              />
-              <Button
-                as={Link}
-                href={`/admin/article/0?category=${activeCategory}`}
-                size="lg"
-                color="warning"
-                variant="shadow"
-                startContent={<PlusIcon className="w-6" />}
-              >
-                新文章
-              </Button>
-            </header>
+      <section className="flex flex-col gap-4">
+        <header className="flex items-center justify-between">
+          <Pagination
+            initialPage={currentPage}
+            total={totalPages}
+            showControls
+            color="warning"
+            size="lg"
+            className="cursor-pointer"
+            onChange={setCurrentPage}
+          />
+          <Button
+            as={Link}
+            href={`/admin/article/0?category=${activeCategory}`}
+            size="lg"
+            color="warning"
+            variant="shadow"
+            startContent={<PlusIcon className="w-6" />}
+          >
+            新文章
+          </Button>
+        </header>
+        {activeCategory ? (
+          articles.length > 0 ? (
             <BlogPostList posts={articles} loading={loading} isAdmin />
-          </section>
+          ) : (
+            <p className="text-center text-default-500 p-6">無此分類的文章</p>
+          )
         ) : (
-          <p className="text-center text-default-500 p-6">無此分類的文章</p>
-        )
-      ) : (
-        <p className="text-center text-default-500 p-6">未選擇分類</p>
-      )}
+          <p className="text-center text-default-500 p-6">未選擇分類</p>
+        )}
+      </section>
     </MainLayout>
   );
 }

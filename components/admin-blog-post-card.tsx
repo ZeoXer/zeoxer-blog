@@ -3,7 +3,7 @@
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
-import { EditIcon, GlobeIcon, LockIcon, TrashIcon } from "./icons";
+import { EditIcon, EyeIcon, GlobeIcon, LockIcon, TrashIcon } from "./icons";
 import { Switch } from "@heroui/switch";
 import { TArticle } from "@/types/article";
 import { deleteArticle, updateArticle } from "@/data/article";
@@ -18,7 +18,6 @@ import {
   useDisclosure,
 } from "@heroui/modal";
 import { useCategory } from "@/app/use-category";
-import { Divider } from "@heroui/divider";
 
 interface AdminBlogPostCardProps {
   post: TArticle;
@@ -94,6 +93,14 @@ export const AdminBlogPostCard = ({ post }: AdminBlogPostCardProps) => {
           </div>
         </CardHeader>
         <CardFooter className="flex justify-end items-center gap-2">
+          <Button
+            as={Link}
+            href={`/admin/preview?id=${post.id}`}
+            startContent={<EyeIcon className="w-6" />}
+            color="secondary"
+          >
+            預覽
+          </Button>
           <Button
             as={Link}
             href={`/admin/article/${post.id}`}

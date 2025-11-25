@@ -2,7 +2,6 @@ import { APIResponse } from "@/types/auth";
 import { HttpClient } from "./client/http-client";
 import { API_ENDPOINTS } from "./client/endpoints";
 import { Article, ArticleAnalysis, ArticleCategory } from "@/types/article";
-import { revalidatePath } from "next/cache";
 
 export async function addArticleCategory(categoryName: string) {
   const response = await HttpClient.post<APIResponse<unknown>>(

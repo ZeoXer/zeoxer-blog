@@ -94,7 +94,7 @@ const MarkdownDisplay = ({ content }: { content: string }) => {
           return <li className="list-disc ml-6" {...props} />;
         },
         img(props) {
-          return <img className="my-8" {...props} />;
+          return <img className="my-8 mx-auto" {...props} />;
         },
         code(props) {
           const { children, className, ...rest } = props;
