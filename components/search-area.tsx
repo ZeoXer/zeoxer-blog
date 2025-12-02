@@ -6,7 +6,10 @@ import { Button } from "@heroui/button";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { Link } from "@heroui/link";
 import { useCallback, useEffect, useState } from "react";
-import { searchArticlePublicByKeyword } from "@/data/article";
+import {
+  arrangeDateFormat,
+  searchArticlePublicByKeyword,
+} from "@/data/article";
 import { TArticle } from "@/types/article";
 
 export const SearchArea = () => {
@@ -77,7 +80,8 @@ export const SearchArea = () => {
         title: article.title,
         content: article.content,
         excerpt: article.content.slice(0, 100) + "...",
-        lastUpdated: new Date(article.updated_at).toLocaleDateString(),
+        createDate: arrangeDateFormat(new Date(article.create_at)),
+        lastUpdated: arrangeDateFormat(new Date(article.updated_at)),
       }));
       setSearchResults(formattedResults);
     } catch (error) {
