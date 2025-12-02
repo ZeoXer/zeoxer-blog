@@ -4,6 +4,7 @@ import axios from "axios";
 import AdminArticleEdit from "./article-edit";
 import { TArticle } from "@/types/article";
 import { cache } from "react";
+import { arrangeDateFormat } from "@/data/article";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -16,6 +17,7 @@ const specialArticles: { [key: string]: TArticle } = {
     categoryId: 0,
     content: "",
     excerpt: "這是一篇新文章。",
+    createDate: "",
     lastUpdated: "",
   },
   error: {
@@ -24,6 +26,7 @@ const specialArticles: { [key: string]: TArticle } = {
     categoryId: 0,
     content: "",
     excerpt: "The requested article could not be found.",
+    createDate: "",
     lastUpdated: "",
   },
 };
@@ -53,7 +56,8 @@ const fetchArticle = cache(
         categoryId: data.category_id,
         content: data.content,
         excerpt: data.content.slice(0, 100) + "...",
-        lastUpdated: new Date(data.updated_at).toLocaleDateString(),
+        createDate: arrangeDateFormat(new Date(data.create_at)),
+        lastUpdated: arrangeDateFormat(new Date(data.updated_at)),
         isPublished: data.is_published,
       };
     } catch (error) {
@@ -86,7 +90,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: article.title,
     description: `${article.excerpt}`,
     icons: {
-      icon: "/zeoxers-blog-logo-transparent.svg",
+      icon: "/ZeoXer-blog.png",
     },
   };
 }

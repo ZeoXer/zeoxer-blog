@@ -1,4 +1,4 @@
-import { getPublicArticle } from "@/data/article";
+import { arrangeDateFormat, getPublicArticle } from "@/data/article";
 import ArticleDisplay from "./article-display";
 import { TArticle } from "@/types/article";
 import { cache } from "react";
@@ -18,7 +18,8 @@ const fetchArticle = cache(async (id: number): Promise<TArticle> => {
       categoryId: data.category_id,
       content: data.content,
       excerpt: data.content.slice(0, 100) + "...",
-      lastUpdated: new Date(data.updated_at).toLocaleDateString(),
+      createDate: arrangeDateFormat(new Date(data.create_at)),
+      lastUpdated: arrangeDateFormat(new Date(data.updated_at)),
     };
   } catch (error) {
     console.error("Error fetching article for metadata:", error);
@@ -28,6 +29,7 @@ const fetchArticle = cache(async (id: number): Promise<TArticle> => {
       categoryId: 0,
       content: "",
       excerpt: "The requested article could not be found.",
+      createDate: "",
       lastUpdated: "",
     };
   }
@@ -67,7 +69,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: article.title,
     description: `${article.excerpt}`,
     icons: {
-      icon: "/favicon.ico",
+      icon: "/ZeoXer-blog.png",
     },
     openGraph: {
       title: article.title,

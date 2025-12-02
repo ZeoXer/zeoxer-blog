@@ -10,7 +10,7 @@ import { MainLayout } from "@/components/main-layout";
 import { SearchArea } from "@/components/search-area";
 import { Pagination } from "@heroui/pagination";
 import { cache, useEffect } from "react";
-import { getPublicArticlesByCategory } from "@/data/article";
+import { arrangeDateFormat, getPublicArticlesByCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
 import { useCategory } from "./use-category";
 import { Skeleton } from "@heroui/skeleton";
@@ -37,11 +37,6 @@ export default function Home({ categories }: { categories: TCategory[] }) {
     }
   }, [currentPage]);
 
-  const arrangeDateFormat = (date: Date) => {
-    const [year, month, day] = date.toLocaleDateString().split("/");
-    return `${year}/${month.padStart(2, "0")}/${day.padStart(2, "0")}`;
-  };
-
   const fetchArticlesByCategory = cache(async (categoryId: number) => {
     setLoading(true);
     try {
@@ -56,6 +51,7 @@ export default function Home({ categories }: { categories: TCategory[] }) {
         title: article.title,
         content: article.content,
         excerpt: article.content.slice(0, 100) + "...",
+        createDate: arrangeDateFormat(new Date(article.create_at)),
         lastUpdated: arrangeDateFormat(new Date(article.updated_at)),
       }));
       setArticles(formattedArticles);
@@ -72,7 +68,7 @@ export default function Home({ categories }: { categories: TCategory[] }) {
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
       <MainBanner
-        title="ZeoXer's Blog"
+        title="ZeoXer Blog"
         description="楊佳勳的個人部落格，主要分享一些技術筆記和學習紀錄"
         backgroundImage="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80"
       />
@@ -112,13 +108,7 @@ export default function Home({ categories }: { categories: TCategory[] }) {
         ) : articles.length > 0 ? (
           <section className="flex flex-col gap-4">
             <h2 className="text-3xl font-bold mb-2">
-              {loading ? (
-                <Skeleton className="w-4/5 rounded-lg">
-                  <div className="h-5 w-4/5 rounded-lg bg-default-200" />
-                </Skeleton>
-              ) : (
-                categories.find((cat) => cat.id === activeCategory)?.name
-              )}
+              {categories.find((cat) => cat.id === activeCategory)?.name}
             </h2>
             <Pagination
               initialPage={currentPage}

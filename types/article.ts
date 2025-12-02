@@ -10,7 +10,7 @@ export type Article = {
   title: string;
   content: string;
   category_id: number;
-  created_at: string;
+  create_at: string;
   updated_at: string;
   is_published: boolean;
 };
@@ -33,5 +33,6 @@ export type TArticle = {
   excerpt: string;
   content: string;
   isPublished?: boolean;
+  createDate: string;
   lastUpdated: string;
 };

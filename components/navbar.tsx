@@ -11,8 +11,8 @@ import { Tabs, Tab } from "@heroui/tabs";
 import NextLink from "next/link";
 
 import { ThemeSwitch } from "@/components/theme-switch";
-import ZeoXerLogo from "@/public/zeoxers-blog-logo-transparent.svg";
-import ZeoXerWhiteLogo from "@/public/zeoxers-blog-logo-white-transparent.svg";
+import ZeoXerLogo from "@/public/ZeoXer-blog.png";
+import ZeoXerWhiteLogo from "@/public/ZeoXer-blog-white.png";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
@@ -48,13 +48,10 @@ export const Navbar = () => {
             <Image
               src={theme === "dark" && !isSSR ? ZeoXerWhiteLogo : ZeoXerLogo}
               alt="ZeoXer's Blog Logo"
-              className="w-14 h-14 shrink-0"
-              width={44}
-              height={44}
+              className="w-20 h-20 shrink-0"
+              width={50}
+              height={50}
             />
-            <p className="hidden sm:block font-bold text-inherit">
-              ZeoXer's Blog
-            </p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
@@ -146,9 +143,9 @@ export const AdminNavbar = () => {
               <Image
                 src={logoSrc}
                 alt="ZeoXer's Blog Logo"
-                className="w-14 h-14"
-                width={44}
-                height={44}
+                className="w-20 h-20"
+                width={50}
+                height={50}
               />
             </NextLink>
           </NavbarBrand>

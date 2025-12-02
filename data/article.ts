@@ -175,3 +175,8 @@ export async function searchArticlePublicByKeyword(
 
   return response;
 }
+
+export const arrangeDateFormat = (date: Date) => {
+  const [year, month, day] = date.toLocaleDateString().split("/");
+  return `${year}/${month.padStart(2, "0")}/${day.padStart(2, "0")}`;
+};

@@ -1,8 +1,9 @@
-import { ClockIcon } from "./icons";
+import { ClockIcon, PenIcon } from "./icons";
 import MarkdownDisplay from "./markdown-display";
 
 interface ArticleContentProps {
   title: string;
+  createDate: string;
   lastUpdated: string;
   content: string;
 }
@@ -10,6 +11,7 @@ interface ArticleContentProps {
 export const ArticleContent = ({
   title,
   lastUpdated,
+  createDate,
   content,
 }: ArticleContentProps) => {
   return (
@@ -19,10 +21,16 @@ export const ArticleContent = ({
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-warning">
           {title}
         </h1>
-        <time className="text-sm text-default-500 flex gap-1 items-center">
-          <ClockIcon className="w-5 inline-block" />
-          最後更新 {lastUpdated}
-        </time>
+        <div className="grid grid-cols-1 gap-2">
+          <time className="text-sm text-default-500 flex gap-1 items-center">
+            <PenIcon className="w-5 inline-block" />
+            撰寫時間 {createDate}
+          </time>
+          <time className="text-sm text-default-500 flex gap-1 items-center">
+            <ClockIcon className="w-5 inline-block" />
+            最後更新 {lastUpdated}
+          </time>
+        </div>
       </header>
 
       {/* Article Content */}

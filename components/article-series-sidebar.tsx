@@ -5,59 +5,19 @@ import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { Tooltip } from "@heroui/tooltip";
 import { TagIcon } from "./icons";
-import { useEffect, useState } from "react";
-import {
-  getArticleCategoryById,
-  getPublicArticlesByCategory,
-} from "@/data/article";
-import { TArticle } from "@/types/article";
 import { Divider } from "@heroui/divider";
+import { useCategory } from "@/app/use-category";
 
 interface ArticleSeriesSidebarProps {
-  categoryId: number | undefined;
-  currentArticleId?: number;
+  categoryName: string;
+  currentArticleId: number;
 }
-const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "ZeoXer";
 
 export const ArticleSeriesSidebar = ({
-  categoryId,
+  categoryName,
   currentArticleId,
 }: ArticleSeriesSidebarProps) => {
-  const [articles, setArticles] = useState<TArticle[]>([]);
-  const [categoryName, setCategoryName] = useState("");
-
-  useEffect(() => {
-    if (categoryId) {
-      fetchArticlesByCategory(categoryId);
-      fetchCurrentCategory(categoryId);
-    }
-  }, [categoryId]);
-
-  const fetchArticlesByCategory = async (categoryId: number) => {
-    try {
-      const { data } = await getPublicArticlesByCategory(categoryId, USER_NAME);
-      const formattedArticles = data.articles.map((article) => ({
-        id: article.id,
-        categoryId: article.category_id,
-        title: article.title,
-        content: article.content,
-        excerpt: article.content.slice(0, 100) + "...",
-        lastUpdated: new Date(article.updated_at).toLocaleDateString(),
-      }));
-      setArticles(formattedArticles);
-    } catch (error) {
-      console.error("Error fetching articles by category:", error);
-    }
-  };
-
-  const fetchCurrentCategory = async (categoryId: number) => {
-    try {
-      const { data } = await getArticleCategoryById(USER_NAME, categoryId);
-      setCategoryName(data.category_name);
-    } catch (error) {
-      console.error("Error fetching category:", error);
-    }
-  };
+  const { articles } = useCategory();
 
   return (
     <Card className="w-full">

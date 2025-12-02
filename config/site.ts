@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "ZeoXer's Blog",
+  name: "ZeoXer Blog",
   description: "楊佳勳的個人部落格，主要分享一些技術筆記和學習紀錄",
   about: `
   我是楊佳勳，在轉往資訊科學領域的過程中累積了許多實作和研究經驗，除了透過實習和遠端工作機會以應用自身所學和能力於實際場合中，

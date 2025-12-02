@@ -8,7 +8,7 @@ import {
 } from "@/components/category-sidebar";
 import { PlusIcon } from "@/components/icons";
 import { MainLayout } from "@/components/main-layout";
-import { getArticlesByCategory } from "@/data/article";
+import { arrangeDateFormat, getArticlesByCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
 import { Button } from "@heroui/button";
 import { Pagination } from "@heroui/pagination";
@@ -35,11 +35,6 @@ export default function AdminHome({ categories }: { categories: TCategory[] }) {
     }
   }, [currentPage]);
 
-  const arrangeDateFormat = (date: Date) => {
-    const [year, month, day] = date.toLocaleDateString().split("/");
-    return `${year}/${month.padStart(2, "0")}/${day.padStart(2, "0")}`;
-  };
-
   const fetchArticlesByCategory = async (categoryId: number) => {
     setLoading(true);
     try {
@@ -51,6 +46,7 @@ export default function AdminHome({ categories }: { categories: TCategory[] }) {
         content: article.content,
         excerpt: article.content.slice(0, 100) + "...",
         isPublished: article.is_published,
+        createDate: arrangeDateFormat(new Date(article.create_at)),
         lastUpdated: arrangeDateFormat(new Date(article.updated_at)),
       }));
       setArticles(formattedArticles);

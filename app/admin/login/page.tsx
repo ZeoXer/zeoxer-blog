@@ -6,14 +6,13 @@ import { Input } from "@heroui/input";
 import { useIsSSR } from "@react-aria/ssr";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import ZeoXerLogo from "@/public/zeoxers-blog-logo-transparent.svg";
-import ZeoXerWhiteLogo from "@/public/zeoxers-blog-logo-white-transparent.svg";
+import ZeoXerLogo from "@/public/ZeoXer-blog.png";
+import ZeoXerWhiteLogo from "@/public/ZeoXer-blog-white.png";
 import { Button } from "@heroui/button";
 import { login } from "@/data/auth";
 import { setAuthToken } from "@/data/client/token";
 import { addToast } from "@heroui/toast";
 import { useRouter } from "next/navigation";
-import { setAuthTokenServer } from "@/data/server/token";
 
 export default function AdminLoginPage() {
   const { theme } = useTheme();
