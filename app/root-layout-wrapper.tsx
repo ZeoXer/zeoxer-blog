@@ -51,7 +51,7 @@ export default function RootLayoutWrapper({
         {!isAdmin && <PageFooter year={new Date().getFullYear()} />}
       </div>
       <div
-        className="w-10 h-10 rounded-full bg-warning opacity-40 fixed pointer-events-none z-[100] shadow-md"
+        className="w-10 h-10 rounded-full bg-warning opacity-40 fixed pointer-events-none z-[100] shadow-md hidden md:block"
         ref={cursorRef}
       />
       {isLoading && <FullPageLoading />}
