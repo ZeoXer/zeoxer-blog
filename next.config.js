@@ -9,7 +9,15 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ["pub-730d41d50aa14413843d2f22e88310a6.r2.dev"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pub-730d41d50aa14413843d2f22e88310a6.r2.dev",
+        port: "",
+        pathname: "/**",
+        search: "",
+      },
+    ],
   },
 };
 

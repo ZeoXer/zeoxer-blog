@@ -1,3 +1,5 @@
+"use client";
+
 import { SmileIcon } from "@/components/icons";
 import { Button } from "@heroui/button";
 import Image from "next/image";
