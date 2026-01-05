@@ -13,7 +13,8 @@ import { cache, useEffect } from "react";
 import { arrangeDateFormat, getPublicArticlesByCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
 import { useCategory } from "./use-category";
-import { Skeleton } from "@heroui/skeleton";
+import { Readme } from "./readme";
+import { siteConfig } from "@/config/site";
 
 const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
 
@@ -68,9 +69,9 @@ export default function Home({ categories }: { categories: TCategory[] }) {
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
       <MainBanner
-        title="ZeoXer Blog"
-        description="楊佳勳的個人部落格，主要分享一些技術筆記和學習紀錄"
-        backgroundImage="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80"
+        title={siteConfig.name}
+        description={siteConfig.description}
+        // backgroundImage="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80"
       />
 
       {/* Main Content Area */}
@@ -94,6 +95,10 @@ export default function Home({ categories }: { categories: TCategory[] }) {
           categories={categories}
           activeCategory={activeCategory}
           onCategoryClick={(id) => {
+            if (id === 0) {
+              setActiveCategory(0);
+              return;
+            }
             if (id !== activeCategory) {
               setCurrentPage(1);
             }
@@ -102,9 +107,7 @@ export default function Home({ categories }: { categories: TCategory[] }) {
         />
         {/* Blog Post List */}
         {!activeCategory ? (
-          <p className="text-center text-default-500 p-6 hidden lg:block">
-            請選擇分類以查看文章
-          </p>
+          <Readme />
         ) : articles.length > 0 ? (
           <section className="flex flex-col gap-4">
             <h2 className="text-3xl font-bold mb-2">

@@ -13,7 +13,7 @@ const fetchArticleCategories = async (): Promise<TCategory[]> => {
     const formattedCategories = data.map((category) => ({
       id: category.id,
       name: category.category_name,
-      icon: <FolderIcon />,
+      icon: <FolderIcon className="w-5" />,
     }));
     return formattedCategories;
   } catch (error) {
