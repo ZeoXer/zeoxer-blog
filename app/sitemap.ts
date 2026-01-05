@@ -2,7 +2,6 @@
 import { Article } from "@/types/article";
 import { MetadataRoute } from "next";
 
-// 假設這是一個取得所有文章資料的函數 (你要替換成你實際的 API 或資料庫邏輯)
 async function getAllArticles() {
   const apiUrl =
     "https://zeoxer.com/article/public/getAllPublicArticles/ZeoXer";
@@ -10,12 +9,6 @@ async function getAllArticles() {
   try {
     const res = await fetch(apiUrl);
     const rawText = await res.text();
-
-    console.log("============ SITEMAP DEBUG START ============");
-    console.log("API URL:", apiUrl);
-    console.log("API Status:", res.status);
-    console.log("Raw Response:", rawText); // 兇手通常會在這裡現形
-    console.log("============ SITEMAP DEBUG END ============");
 
     return JSON.parse(rawText).data;
   } catch (error) {
