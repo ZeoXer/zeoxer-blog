@@ -13,28 +13,34 @@ interface CategorySidebarProps {
   categories: TCategory[];
   activeCategory?: number;
   onCategoryClick?: (categoryId: number) => void;
+  isClient?: boolean;
 }
 
 export const CategorySidebar = ({
   categories,
   activeCategory,
   onCategoryClick,
+  isClient = false,
 }: CategorySidebarProps) => {
   return (
     <Card className="w-full">
       <CardBody className="p-6">
         <h2 className="text-xl font-semibold mb-4">所有分類</h2>
-        <Divider className="mt-2 mb-1" />
-        <Link
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer text-default-700 font-semibold ${
-            activeCategory === 0 ? "bg-default-100" : "hover:bg-default-50"
-          }`}
-          onPress={() => onCategoryClick?.(0)}
-        >
-          <InfoIcon className="w-5" />
-          關於本站
-        </Link>
-        <Divider className="my-1" />
+        {isClient && (
+          <>
+            <Divider className="mt-2 mb-1" />
+            <Link
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer text-default-700 font-semibold ${
+                activeCategory === 0 ? "bg-default-100" : "hover:bg-default-50"
+              }`}
+              onPress={() => onCategoryClick?.(0)}
+            >
+              <InfoIcon className="w-5" />
+              關於本站
+            </Link>
+            <Divider className="my-1" />
+          </>
+        )}
         <div className="flex flex-col gap-2">
           {categories.map((category) => (
             <Link

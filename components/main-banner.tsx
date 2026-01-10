@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTheme } from "next-themes"; // 假設您使用 next-themes，若無可改為 props 傳入
+import { useTheme } from "next-themes";
 
 interface MainBannerProps {
   title: string;

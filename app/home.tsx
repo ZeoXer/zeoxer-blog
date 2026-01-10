@@ -71,7 +71,6 @@ export default function Home({ categories }: { categories: TCategory[] }) {
       <MainBanner
         title={siteConfig.name}
         description={siteConfig.description}
-        // backgroundImage="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80"
       />
 
       {/* Main Content Area */}
@@ -81,11 +80,16 @@ export default function Home({ categories }: { categories: TCategory[] }) {
             categories={categories}
             activeCategory={activeCategory}
             onCategoryClick={(id) => {
+              if (id === 0) {
+                setActiveCategory(0);
+                return;
+              }
               if (id !== activeCategory) {
                 setCurrentPage(1);
               }
               fetchArticlesByCategory(id);
             }}
+            isClient
           />
         }
         rightSidebar={<SearchArea />}

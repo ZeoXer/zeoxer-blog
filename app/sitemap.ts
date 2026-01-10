@@ -27,11 +27,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articleUrls = articles.map((article: Article) => ({
     url: `${baseUrl}/article/${article.id}`,
     lastModified: new Date(article.updated_at),
-    changeFrequency: "weekly" as const, // 告訴 Google 更新頻率 (選填)
-    priority: 0.7, // 權重 (選填，首頁通常是 1.0)
+    changeFrequency: "weekly" as const, //Google 更新頻率
+    priority: 0.7,
   }));
 
-  // 3. 定義靜態頁面 (如首頁、關於我們)
+  // 3. 定義靜態頁面
   const staticRoutes = [
     {
       url: baseUrl,
