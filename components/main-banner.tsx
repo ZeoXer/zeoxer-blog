@@ -138,7 +138,7 @@ export const MainBanner = ({ title, description }: MainBannerProps) => {
             let opacity = 1 - distance / config.linkRadius;
             const colorBase = themeConfig.lineColor.substring(
               0,
-              themeConfig.lineColor.lastIndexOf(",")
+              themeConfig.lineColor.lastIndexOf(","),
             );
             ctx.strokeStyle = `${colorBase}, ${opacity * 0.4})`;
             ctx.lineWidth = 1;
@@ -156,7 +156,7 @@ export const MainBanner = ({ title, description }: MainBannerProps) => {
           let opacity = 1 - distMouse / config.linkRadius;
           const mouseColorBase = themeConfig.mouseLineColor.substring(
             0,
-            themeConfig.mouseLineColor.lastIndexOf(",")
+            themeConfig.mouseLineColor.lastIndexOf(","),
           );
           ctx.strokeStyle = `${mouseColorBase}, ${opacity * 0.5})`;
           ctx.lineWidth = 1;
@@ -243,7 +243,7 @@ export const MainBanner = ({ title, description }: MainBannerProps) => {
         className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
       />
 
-      <div className="z-10 relative text-center px-6 w-[60%] max-w-4xl mx-auto">
+      <div className="z-10 relative text-center px-6 w-full lg:w-[80%] xl:w-[60%] max-w-4xl mx-auto">
         <div className="glass-panel p-8 md:p-12 rounded-2xl animate-fade-in-up border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-black/60 backdrop-blur-md shadow-xl">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight pb-2 bg-gradient-to-r from-slate-800 via-orange-600 to-amber-600 dark:from-slate-100 dark:via-orange-400 dark:to-amber-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
             {title}

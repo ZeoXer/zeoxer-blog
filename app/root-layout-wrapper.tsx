@@ -41,11 +41,11 @@ export default function RootLayoutWrapper({
       <div
         className={clsx(
           "relative flex flex-col h-screen",
-          isLoading && "overflow-hidden"
+          isLoading && "overflow-hidden",
         )}
       >
         {isAdmin ? <AdminNavbar /> : <Navbar />}
-        <main className="container mx-auto max-w-7xl pt-16 px-4 sm:px-6 flex-grow">
+        <main className="container mx-auto max-w-7xl pt-8 sm:pt-16 px-6 flex-grow">
           {children}
         </main>
         {!isAdmin && <PageFooter year={new Date().getFullYear()} />}
