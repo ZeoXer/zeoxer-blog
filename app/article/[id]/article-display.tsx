@@ -13,6 +13,7 @@ import {
   HomeIcon,
   PenIcon,
 } from "@/components/icons";
+import { Comment } from "@/components/comment";
 
 interface ArticleDisplayProps {
   article: TArticle;
@@ -75,6 +76,7 @@ export default function ArticleDisplay({
               {markdownContent}
             </div>
           </div>
+          <Comment />
         </article>
       </MainLayout>
       <BackToTop />
