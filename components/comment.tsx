@@ -17,6 +17,7 @@ export const Comment = () => {
         emitMetadata="0"
         inputPosition="top"
         loading="lazy"
+        lang="zh-TW"
         theme={theme}
       />
     </div>
