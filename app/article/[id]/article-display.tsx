@@ -5,15 +5,10 @@ import { ArticleSeriesSidebar } from "@/components/article-series-sidebar";
 import { ArticleTocSidebar } from "@/components/article-toc-sidebar";
 import { TArticle } from "@/types/article";
 import { BackToTop } from "@/components/back-to-top";
-import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
-import {
-  ClockIcon,
-  DocumentIcon,
-  FolderIcon,
-  HomeIcon,
-  PenIcon,
-} from "@/components/icons";
+import { ClockIcon, PenIcon } from "@/components/icons";
 import { Comment } from "@/components/comment";
+import { Button } from "@heroui/button";
+import { ArticleBreadcrumbs } from "@/components/article-breadcombs";
 
 interface ArticleDisplayProps {
   article: TArticle;
@@ -30,17 +25,7 @@ export default function ArticleDisplay({
 }: ArticleDisplayProps) {
   return (
     <>
-      <Breadcrumbs underline="hover">
-        <BreadcrumbItem startContent={<HomeIcon className="w-5" />} href="/">
-          首頁
-        </BreadcrumbItem>
-        <BreadcrumbItem startContent={<FolderIcon className="w-5" />}>
-          {categoryName}
-        </BreadcrumbItem>
-        <BreadcrumbItem startContent={<DocumentIcon className="w-5" />}>
-          {article.title}
-        </BreadcrumbItem>
-      </Breadcrumbs>
+      <ArticleBreadcrumbs categoryName={categoryName} title={article.title} />
       <MainLayout
         leftSidebar={
           <ArticleSeriesSidebar
@@ -58,7 +43,7 @@ export default function ArticleDisplay({
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-warning">
               {article.title}
             </h1>
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-2 mb-4">
               <time className="text-sm text-default-500 flex gap-1 items-center">
                 <PenIcon className="w-5 inline-block" />
                 撰寫時間 {article.createDate}
