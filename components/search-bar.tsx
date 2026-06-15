@@ -1,7 +1,6 @@
 "use client";
 
-import { Input } from "@heroui/input";
-import { SearchIcon } from "@/components/icons";
+import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -9,28 +8,19 @@ interface SearchBarProps {
   onSearch?: (query: string) => void;
 }
 
-export const SearchBar = ({
-  placeholder = "Search",
-  className = "",
-  onSearch,
-}: SearchBarProps) => {
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onSearch) {
-      onSearch(e.target.value);
-    }
-  };
+const ROTATING_PLACEHOLDERS = [
+  "搜尋文章標題或內文...",
+  "想找什麼技術筆記？",
+  "輸入關鍵字試試看",
+  "Endpoint-first / Repository / Aceternity...",
+];
 
+export const SearchBar = ({ onSearch }: SearchBarProps) => {
   return (
-    <Input
-      classNames={{
-        base: className,
-        inputWrapper: "bg-default-100",
-      }}
-      placeholder={placeholder}
-      size="lg"
-      startContent={<SearchIcon className="text-default-400" />}
-      type="search"
-      onChange={handleSearch}
+    <PlaceholdersAndVanishInput
+      placeholders={ROTATING_PLACEHOLDERS}
+      onChange={(e) => onSearch && onSearch(e.target.value)}
+      onSubmit={() => onSearch && onSearch("")}
     />
   );
 };

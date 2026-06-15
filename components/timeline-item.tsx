@@ -4,18 +4,14 @@ import Image from "next/image";
 interface TimelineItemProps {
   title: string;
   subtitle?: string;
-  startDate: string;
-  endDate?: string;
-  description?: string;
+  descriptions?: string[];
   logoUrl?: string;
 }
 
 export default function TimelineItem({
   title,
   subtitle,
-  startDate,
-  endDate,
-  description,
+  descriptions,
   logoUrl,
 }: TimelineItemProps) {
   return (
@@ -39,11 +35,14 @@ export default function TimelineItem({
               <h4 className=" text-gray-400 inline-block">{subtitle}</h4>
             )}
           </div>
-          <p className="text-gray-500">
-            {startDate} - {endDate || "Now"}
-          </p>
         </div>
-        {description && <p className="mt-4">{description}</p>}
+        {descriptions && descriptions.length > 0 && (
+          <ul className="mt-4 list-disc pl-5 space-y-1 text-default-700">
+            {descriptions.map((d, i) => (
+              <li key={i}>{d}</li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

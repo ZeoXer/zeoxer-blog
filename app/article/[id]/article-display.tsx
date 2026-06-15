@@ -9,6 +9,7 @@ import { ClockIcon, PenIcon } from "@/components/icons";
 import { Comment } from "@/components/comment";
 import { Button } from "@heroui/button";
 import { ArticleBreadcrumbs } from "@/components/article-breadcombs";
+import { TracingBeam } from "@/components/ui/tracing-beam";
 
 interface ArticleDisplayProps {
   article: TArticle;
@@ -37,32 +38,34 @@ export default function ArticleDisplay({
         rightSidebar={<ArticleTocSidebar article={article} />}
         lgLayoutRatio="lg:grid-cols-[20%_1fr_20%]"
       >
-        <article className="w-full max-w-2xl">
-          {/* Article Header */}
-          <header className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-warning">
-              {article.title}
-            </h1>
-            <div className="grid grid-cols-1 gap-2 mb-4">
-              <time className="text-sm text-default-500 flex gap-1 items-center">
-                <PenIcon className="w-5 inline-block" />
-                撰寫時間 {article.createDate}
-              </time>
-              <time className="text-sm text-default-500 flex gap-1 items-center">
-                <ClockIcon className="w-5 inline-block" />
-                最後更新 {article.lastUpdated}
-              </time>
-            </div>
-          </header>
+        <TracingBeam>
+          <article className="w-full max-w-2xl pl-12 md:pl-16">
+            {/* Article Header */}
+            <header className="mb-8">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-warning">
+                {article.title}
+              </h1>
+              <div className="grid grid-cols-1 gap-2 mb-4">
+                <time className="text-sm text-default-500 flex gap-1 items-center">
+                  <PenIcon className="w-5 inline-block" />
+                  撰寫時間 {article.createDate}
+                </time>
+                <time className="text-sm text-default-500 flex gap-1 items-center">
+                  <ClockIcon className="w-5 inline-block" />
+                  最後更新 {article.lastUpdated}
+                </time>
+              </div>
+            </header>
 
-          {/* Article Content */}
-          <div className="prose prose-invert max-w-none">
-            <div className="text-default-700 leading-relaxed">
-              {markdownContent}
+            {/* Article Content */}
+            <div className="prose prose-invert max-w-none">
+              <div className="text-default-700 leading-relaxed">
+                {markdownContent}
+              </div>
             </div>
-          </div>
-          <Comment />
-        </article>
+            <Comment />
+          </article>
+        </TracingBeam>
       </MainLayout>
       <BackToTop />
     </>

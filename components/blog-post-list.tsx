@@ -1,10 +1,10 @@
 "use client";
 
 import { Skeleton } from "@heroui/skeleton";
-import { BlogPostCard } from "./blog-post-card";
 import { Card } from "@heroui/card";
 import { TArticle } from "@/types/article";
 import { AdminBlogPostCard } from "./admin-blog-post-card";
+import { HoverEffect, HoverEffectItem } from "./ui/card-hover-effect";
 
 interface BlogPostListProps {
   posts: TArticle[];
@@ -48,21 +48,22 @@ export const BlogPostList = ({
     );
   }
 
-  return (
-    <div className="flex flex-col gap-6">
-      {posts.map((post) =>
-        isAdmin ? (
+  if (isAdmin) {
+    return (
+      <div className="flex flex-col gap-6">
+        {posts.map((post) => (
           <AdminBlogPostCard key={post.id} post={post} />
-        ) : (
-          <BlogPostCard
-            key={post.id}
-            id={post.id}
-            title={post.title}
-            excerpt={post.excerpt}
-            lastUpdated={post.lastUpdated}
-          />
-        )
-      )}
-    </div>
-  );
+        ))}
+      </div>
+    );
+  }
+
+  const items: HoverEffectItem[] = posts.map((post) => ({
+    title: post.title,
+    description: post.excerpt,
+    link: `/article/${post.id}`,
+    meta: `最後更新 ${post.lastUpdated}`,
+  }));
+
+  return <HoverEffect items={items} />;
 };

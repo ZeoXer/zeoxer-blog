@@ -2,12 +2,12 @@
 
 import { TCategory } from "@/types/article";
 import { Card, CardBody } from "@heroui/card";
-import { Drawer, DrawerContent, DrawerHeader } from "@heroui/drawer";
+import { Drawer, DrawerContent } from "@heroui/drawer";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
-import { Link } from "@heroui/link";
 import { InfoIcon } from "./icons";
-import { Divider } from "@heroui/divider";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface CategorySidebarProps {
   categories: TCategory[];
@@ -16,45 +16,72 @@ interface CategorySidebarProps {
   isClient?: boolean;
 }
 
+type Item = { id: number; label: string; icon?: React.ReactNode };
+
+const buildItems = (
+  categories: TCategory[],
+  isClient: boolean
+): Item[] => {
+  const items: Item[] = [];
+  if (isClient) {
+    items.push({ id: 0, label: "關於本站", icon: <InfoIcon className="w-5" /> });
+  }
+  for (const c of categories) {
+    items.push({ id: c.id, label: c.name, icon: c.icon });
+  }
+  return items;
+};
+
+const SidebarItem = ({
+  item,
+  active,
+  onClick,
+}: {
+  item: Item;
+  active: boolean;
+  onClick?: () => void;
+}) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative flex w-full items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-left transition-colors",
+        active ? "text-warning" : "text-default-700 hover:text-warning/80"
+      )}
+    >
+      {active && (
+        <motion.span
+          layoutId="active-category-pill"
+          className="absolute inset-0 rounded-lg bg-warning/15 dark:bg-warning/10"
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        />
+      )}
+      <span className="relative z-10 text-default-500">{item.icon}</span>
+      <span className="relative z-10">{item.label}</span>
+    </button>
+  );
+};
+
 export const CategorySidebar = ({
   categories,
   activeCategory,
   onCategoryClick,
   isClient = false,
 }: CategorySidebarProps) => {
+  const items = buildItems(categories, isClient);
   return (
     <Card className="w-full">
       <CardBody className="p-6">
         <h2 className="text-xl font-semibold mb-4">所有分類</h2>
-        {isClient && (
-          <>
-            <Divider className="mt-2 mb-1" />
-            <Link
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer text-default-700 font-semibold ${
-                activeCategory === 0 ? "bg-default-100" : "hover:bg-default-50"
-              }`}
-              onPress={() => onCategoryClick?.(0)}
-            >
-              <InfoIcon className="w-5" />
-              關於本站
-            </Link>
-            <Divider className="my-1" />
-          </>
-        )}
-        <div className="flex flex-col gap-2">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
-                activeCategory === category.id
-                  ? "bg-default-100"
-                  : "hover:bg-default-50"
-              }`}
-              onPress={() => onCategoryClick?.(category.id)}
-            >
-              <span className="text-default-500">{category.icon}</span>
-              <span className="text-default-700">{category.name}</span>
-            </Link>
+        <div className="flex flex-col gap-1">
+          {items.map((item) => (
+            <SidebarItem
+              key={item.id}
+              item={item}
+              active={activeCategory === item.id}
+              onClick={() => onCategoryClick?.(item.id)}
+            />
           ))}
         </div>
       </CardBody>
@@ -68,6 +95,7 @@ export const MobileCategorySidebar = ({
   onCategoryClick,
 }: CategorySidebarProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const items = buildItems(categories, false);
 
   return (
     <>
@@ -92,23 +120,17 @@ export const MobileCategorySidebar = ({
           <div className="w-full">
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">所有分類</h2>
-              <div className="flex flex-col gap-2">
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
-                      activeCategory === category.id
-                        ? "bg-default-100"
-                        : "hover:bg-default-50"
-                    }`}
-                    onPress={() => {
-                      onCategoryClick?.(category.id);
+              <div className="flex flex-col gap-1">
+                {items.map((item) => (
+                  <SidebarItem
+                    key={item.id}
+                    item={item}
+                    active={activeCategory === item.id}
+                    onClick={() => {
+                      onCategoryClick?.(item.id);
                       onOpenChange();
                     }}
-                  >
-                    <span className="text-default-500">{category.icon}</span>
-                    <span className="text-default-700">{category.name}</span>
-                  </Link>
+                  />
                 ))}
               </div>
             </div>

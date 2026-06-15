@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { Link } from "@heroui/link";
+import { FloatingNav } from "@/components/ui/floating-navbar";
 
 export const Navbar = () => {
   const { theme } = useTheme();
@@ -41,49 +42,28 @@ export const Navbar = () => {
     tabs.find((t) => t.match(pathname))?.key ?? pathname ?? "/";
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-2" href="/">
-            <Image
-              src={theme === "dark" && !isSSR ? ZeoXerWhiteLogo : ZeoXerLogo}
-              alt="ZeoXer's Blog Logo"
-              className="w-20 h-20 shrink-0"
-              width={50}
-              height={50}
-            />
-          </NextLink>
-        </NavbarBrand>
-      </NavbarContent>
+    <FloatingNav>
+      <div className="flex w-full items-center justify-between gap-4">
+        <NextLink className="flex items-center" href="/">
+          <Image
+            src={theme === "dark" && !isSSR ? ZeoXerWhiteLogo : ZeoXerLogo}
+            alt="ZeoXer's Blog Logo"
+            className="w-12 h-12 shrink-0"
+            width={48}
+            height={48}
+            priority
+          />
+        </NextLink>
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <ThemeSwitch />
-        </NavbarItem>
-        <NavbarItem className="hidden md:flex">
+        <div className="flex items-center gap-2">
           <Tabs selectedKey={selectedKey} variant="solid" radius="full">
             <Tab key="/" title="部落格" href="/" />
             <Tab key="/about" title="個人檔案" href="/about" />
           </Tabs>
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Tabs selectedKey={selectedKey} variant="solid" radius="full">
-          <Tab key="/" title="部落格" href="/" />
-          <Tab key="/about" title="個人檔案" href="/about" />
-        </Tabs>
-        <ThemeSwitch />
-        {/* <NavbarMenuToggle /> */}
-      </NavbarContent>
-
-      <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2"></div>
-      </NavbarMenu>
-    </HeroUINavbar>
+          <ThemeSwitch />
+        </div>
+      </div>
+    </FloatingNav>
   );
 };
 
@@ -197,7 +177,6 @@ export const AdminNavbar = () => {
             <Tab key="/admin/assets" title="管理圖床" href="/admin/assets" />
           </Tabs>
           <ThemeSwitch />
-          {/* <NavbarMenuToggle /> */}
           <Button variant="bordered" size="sm" onPress={logout}>
             登出
           </Button>

@@ -1,29 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import {
+  useInView,
+  useMotionValue,
+  useSpring,
+  useMotionValueEvent,
+} from "framer-motion";
 
 type NumberCounterProps = {
   endNumber: number;
+  duration?: number;
 };
 
-const NumberCounter: React.FC<NumberCounterProps> = ({ endNumber }) => {
-  const [currentNumber, setCurrentNumber] = useState(0);
+const NumberCounter: React.FC<NumberCounterProps> = ({
+  endNumber,
+  duration = 1.2,
+}) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
+
+  const motionValue = useMotionValue(0);
+  const spring = useSpring(motionValue, {
+    duration: duration * 1000,
+    bounce: 0,
+  });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentNumber((prevNumber) => {
-        if (prevNumber < endNumber) {
-          return prevNumber + 1;
-        }
-        clearInterval(interval); // 當數字達到結束數字時清除定時器
-        return endNumber;
-      });
-    }, 20);
+    if (inView) {
+      motionValue.set(endNumber);
+    }
+  }, [inView, endNumber, motionValue]);
 
-    return () => clearInterval(interval); // 清除定時器
-  }, [endNumber]);
+  useMotionValueEvent(spring, "change", (latest) => {
+    if (ref.current) {
+      ref.current.textContent = Math.round(latest).toLocaleString("en-US");
+    }
+  });
 
-  return <span>{currentNumber}</span>;
+  return <span ref={ref}>0</span>;
 };
 
 export default NumberCounter;

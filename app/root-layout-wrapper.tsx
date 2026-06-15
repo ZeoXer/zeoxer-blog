@@ -45,7 +45,12 @@ export default function RootLayoutWrapper({
         )}
       >
         {isAdmin ? <AdminNavbar /> : <Navbar />}
-        <main className="container mx-auto max-w-7xl pt-8 sm:pt-16 px-6 flex-grow">
+        <main
+          className={clsx(
+            "container mx-auto max-w-7xl px-6 flex-grow",
+            isAdmin ? "pt-8 sm:pt-16" : "pt-28 sm:pt-32"
+          )}
+        >
           {children}
         </main>
         {!isAdmin && <PageFooter year={new Date().getFullYear()} />}
