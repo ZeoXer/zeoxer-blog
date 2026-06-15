@@ -7,6 +7,8 @@ import { Description } from "./description";
 import { Skills } from "./skills";
 import { Hero } from "./hero";
 
+const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
+
 export default function AboutPage() {
   const [analysis, setAnalysis] = useState<[number, number]>([0, 0]);
 
@@ -16,7 +18,7 @@ export default function AboutPage() {
 
   const fetchArticleAnalysis = async () => {
     try {
-      const { data } = await getArticleAnalysis("ZeoXer");
+      const { data } = await getArticleAnalysis(USER_NAME);
       const { article_amount, article_category_amount } = data;
       setAnalysis([article_amount, article_category_amount]);
     } catch (error) {

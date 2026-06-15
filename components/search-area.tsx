@@ -12,6 +12,8 @@ import {
 } from "@/data/article";
 import { TArticle } from "@/types/article";
 
+const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
+
 export const SearchArea = () => {
   const [keyword, setKeyword] = useState("");
   const [searchResults, setSearchResults] = useState<TArticle[]>([]);
@@ -73,7 +75,7 @@ export const SearchArea = () => {
     if (!keyword) return;
 
     try {
-      const { data } = await searchArticlePublicByKeyword(keyword, "ZeoXer");
+      const { data } = await searchArticlePublicByKeyword(keyword, USER_NAME);
       const formattedResults = data.map((article) => ({
         id: article.id,
         categoryId: article.category_id,

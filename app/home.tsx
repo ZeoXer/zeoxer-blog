@@ -9,7 +9,7 @@ import { BlogPostList } from "@/components/blog-post-list";
 import { MainLayout } from "@/components/main-layout";
 import { SearchArea } from "@/components/search-area";
 import { Pagination } from "@heroui/pagination";
-import { cache, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { arrangeDateFormat, getPublicArticlesByCategory } from "@/data/article";
 import { TCategory } from "@/types/article";
 import { useCategory } from "./use-category";
@@ -32,38 +32,41 @@ export default function Home({ categories }: { categories: TCategory[] }) {
     setTotalPages,
   } = useCategory();
 
+  const fetchArticlesByCategory = useCallback(
+    async (categoryId: number) => {
+      setLoading(true);
+      try {
+        const { data } = await getPublicArticlesByCategory(
+          categoryId,
+          USER_NAME,
+          currentPage
+        );
+        const formattedArticles = data.articles.map((article) => ({
+          id: article.id,
+          categoryId: article.category_id,
+          title: article.title,
+          content: article.content,
+          excerpt: article.content.slice(0, 100) + "...",
+          createDate: arrangeDateFormat(new Date(article.create_at)),
+          lastUpdated: arrangeDateFormat(new Date(article.updated_at)),
+        }));
+        setArticles(formattedArticles);
+        setActiveCategory(categoryId);
+        setTotalPages(data.total_page);
+      } catch (error) {
+        console.error("Error fetching articles by category:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage, setActiveCategory, setArticles, setLoading, setTotalPages]
+  );
+
   useEffect(() => {
     if (activeCategory) {
       fetchArticlesByCategory(activeCategory);
     }
-  }, [currentPage]);
-
-  const fetchArticlesByCategory = cache(async (categoryId: number) => {
-    setLoading(true);
-    try {
-      const { data } = await getPublicArticlesByCategory(
-        categoryId,
-        USER_NAME,
-        currentPage
-      );
-      const formattedArticles = data.articles.map((article) => ({
-        id: article.id,
-        categoryId: article.category_id,
-        title: article.title,
-        content: article.content,
-        excerpt: article.content.slice(0, 100) + "...",
-        createDate: arrangeDateFormat(new Date(article.create_at)),
-        lastUpdated: arrangeDateFormat(new Date(article.updated_at)),
-      }));
-      setArticles(formattedArticles);
-      setActiveCategory(categoryId);
-      setTotalPages(data.total_page);
-    } catch (error) {
-      console.error("Error fetching articles by category:", error);
-    } finally {
-      setLoading(false);
-    }
-  });
+  }, [currentPage, activeCategory, fetchArticlesByCategory]);
 
   return (
     <div className="min-h-screen flex flex-col">

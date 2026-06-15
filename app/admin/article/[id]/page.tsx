@@ -41,7 +41,7 @@ const fetchArticle = cache(
       const {
         data: { data },
       } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}${API_ENDPOINTS.GET_ARTICLE}/${id}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}${API_ENDPOINTS.ARTICLE}/${id}`,
         {
           headers: token
             ? {

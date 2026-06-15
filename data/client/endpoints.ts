@@ -1,28 +1,18 @@
 export const API_ENDPOINTS = {
+  // Auth
   LOGIN: "/auth/login",
-  SIGNUP: "/auth/signup",
-  ME: "/user/me",
-  UPLOAD_AVATAR: "/image/uploadAvatar",
-  GET_AVATAR: "/image/getAvatar",
-  GET_PUBLIC_AVATAR: "/image/public/getAvatar",
-  REMOVE_AVATAR: "/image/removeAvatar",
-  UPLOAD_IMAGE: "/image/uploadImage",
-  LIST_BUCKET_IMAGES: "/r2/listObjects",
-  UPLOAD_IMAGE_R2: "/r2/putObject",
-  ADD_CATEGORY: "/article/addArticleCategory",
-  GET_ALL_CATEGORY: "/article/getAllArticleCategory",
-  GET_ALL_PUBLIC_CATEGORY: "/article/public/getAllArticleCategory",
-  GET_CATEGORY_BY_ID: "/article/public/getArticleCategoryById",
-  UPDATE_CATEGORY: "/article/updateArticleCategory",
-  DELETE_CATEGORY: "/article/deleteArticleCategory",
-  ADD_ARTICLE: "/article/addArticle",
-  GET_ARTICLE: "/article/getArticle",
-  GET_PUBLIC_ARTICLE: "/article/public/getArticle",
-  UPDATE_ARTICLE: "/article/updateArticle",
-  DELETE_ARTICLE: "/article/deleteArticle",
-  GET_ARTICLES_BY_CATEGORY: "/article/getArticlesByCategory",
-  GET_PUBLIC_ARTICLES_BY_CATEGORY: "/article/public/getArticlesByCategory",
-  GET_ARTICLE_ANALYSIS: "/article/public/getArticleAnalysis",
-  SEARCH_ARTICLE: "/article/searchArticleByKeyword",
-  SEARCH_ARTICLE_PUBLIC: "/article/public/searchArticleByKeyword",
+
+  // Article Category (private)
+  CATEGORY: "/category",
+
+  // Article (private)
+  ARTICLE: "/article",
+  ARTICLE_BY_CATEGORY: "/article/category", // append `/${categoryId}`
+  ARTICLE_SEARCH: "/article/search",
+
+  // Public — prefix; usage: `${PUBLIC}/${authorName}/...`
+  PUBLIC: "/public",
+
+  // Storage (R2)
+  STORAGE: "/storage",
 };

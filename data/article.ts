@@ -3,9 +3,11 @@ import { HttpClient } from "./client/http-client";
 import { API_ENDPOINTS } from "./client/endpoints";
 import { Article, ArticleAnalysis, ArticleCategory } from "@/types/article";
 
+// --- Article Category (private) ---
+
 export async function addArticleCategory(categoryName: string) {
   const response = await HttpClient.post<APIResponse<unknown>>(
-    API_ENDPOINTS.ADD_CATEGORY,
+    API_ENDPOINTS.CATEGORY,
     {
       category_name: categoryName,
     }
@@ -16,26 +18,7 @@ export async function addArticleCategory(categoryName: string) {
 
 export async function getAllArticleCategory() {
   const response = await HttpClient.get<APIResponse<ArticleCategory[]>>(
-    API_ENDPOINTS.GET_ALL_CATEGORY
-  );
-
-  return response;
-}
-
-export async function getAllPublicArticleCategory(authorName: string) {
-  const response = await HttpClient.get<APIResponse<ArticleCategory[]>>(
-    `${API_ENDPOINTS.GET_ALL_PUBLIC_CATEGORY}/${authorName}`
-  );
-
-  return response;
-}
-
-export async function getArticleCategoryById(
-  authorName: string,
-  categoryId: number
-) {
-  const response = await HttpClient.get<APIResponse<ArticleCategory>>(
-    `${API_ENDPOINTS.GET_CATEGORY_BY_ID}/${authorName}/${categoryId}`
+    API_ENDPOINTS.CATEGORY
   );
 
   return response;
@@ -46,7 +29,7 @@ export async function updateArticleCategory(
   categoryName: string
 ) {
   const response = await HttpClient.put<APIResponse<unknown>>(
-    `${API_ENDPOINTS.UPDATE_CATEGORY}/${categoryId}`,
+    `${API_ENDPOINTS.CATEGORY}/${categoryId}`,
     {
       category_name: categoryName,
     }
@@ -57,11 +40,34 @@ export async function updateArticleCategory(
 
 export async function deleteArticleCategory(categoryId: number) {
   const response = await HttpClient.delete<APIResponse<unknown>>(
-    `${API_ENDPOINTS.DELETE_CATEGORY}/${categoryId}`
+    `${API_ENDPOINTS.CATEGORY}/${categoryId}`
   );
 
   return response;
 }
+
+// --- Article Category (public) ---
+
+export async function getAllPublicArticleCategory(authorName: string) {
+  const response = await HttpClient.get<APIResponse<ArticleCategory[]>>(
+    `${API_ENDPOINTS.PUBLIC}/${authorName}/category`
+  );
+
+  return response;
+}
+
+export async function getArticleCategoryById(
+  authorName: string,
+  categoryId: number
+) {
+  const response = await HttpClient.get<APIResponse<ArticleCategory>>(
+    `${API_ENDPOINTS.PUBLIC}/${authorName}/category/${categoryId}`
+  );
+
+  return response;
+}
+
+// --- Article (private) ---
 
 export async function addArticle(
   title: string,
@@ -69,7 +75,7 @@ export async function addArticle(
   categoryId: number
 ) {
   const response = await HttpClient.post<APIResponse<unknown>>(
-    API_ENDPOINTS.ADD_ARTICLE,
+    API_ENDPOINTS.ARTICLE,
     {
       title,
       content,
@@ -82,15 +88,7 @@ export async function addArticle(
 
 export async function getArticle(articleId: number) {
   const response = await HttpClient.get<APIResponse<Article>>(
-    `${API_ENDPOINTS.GET_ARTICLE}/${articleId}`
-  );
-
-  return response;
-}
-
-export async function getPublicArticle(articleId: number, authorName: string) {
-  const response = await HttpClient.get<APIResponse<Article>>(
-    `${API_ENDPOINTS.GET_PUBLIC_ARTICLE}/${authorName}/${articleId}`
+    `${API_ENDPOINTS.ARTICLE}/${articleId}`
   );
 
   return response;
@@ -104,7 +102,7 @@ export async function updateArticle(
   categoryId: number
 ) {
   const response = await HttpClient.put<APIResponse<unknown>>(
-    `${API_ENDPOINTS.UPDATE_ARTICLE}/${articleId}`,
+    `${API_ENDPOINTS.ARTICLE}/${articleId}`,
     {
       title,
       content,
@@ -118,7 +116,7 @@ export async function updateArticle(
 
 export async function deleteArticle(articleId: number) {
   const response = await HttpClient.delete<APIResponse<unknown>>(
-    `${API_ENDPOINTS.DELETE_ARTICLE}/${articleId}`
+    `${API_ENDPOINTS.ARTICLE}/${articleId}`
   );
 
   return response;
@@ -130,7 +128,25 @@ export async function getArticlesByCategory(
 ) {
   const response = await HttpClient.get<
     APIResponse<{ articles: Article[]; total_page: number }>
-  >(`${API_ENDPOINTS.GET_ARTICLES_BY_CATEGORY}/${categoryId}?page=${page}`);
+  >(`${API_ENDPOINTS.ARTICLE_BY_CATEGORY}/${categoryId}?pageNumber=${page}`);
+
+  return response;
+}
+
+export async function searchArticleByKeyword(keyword: string) {
+  const response = await HttpClient.get<APIResponse<Article[]>>(
+    `${API_ENDPOINTS.ARTICLE_SEARCH}?keyword=${encodeURIComponent(keyword)}`
+  );
+
+  return response;
+}
+
+// --- Article (public) ---
+
+export async function getPublicArticle(articleId: number, authorName: string) {
+  const response = await HttpClient.get<APIResponse<Article>>(
+    `${API_ENDPOINTS.PUBLIC}/${authorName}/article/${articleId}`
+  );
 
   return response;
 }
@@ -143,23 +159,7 @@ export async function getPublicArticlesByCategory(
   const response = await HttpClient.get<
     APIResponse<{ articles: Article[]; total_page: number }>
   >(
-    `${API_ENDPOINTS.GET_PUBLIC_ARTICLES_BY_CATEGORY}/${authorName}/${categoryId}?page=${page}`
-  );
-
-  return response;
-}
-
-export async function getArticleAnalysis(authorName: string) {
-  const response = await HttpClient.get<APIResponse<ArticleAnalysis>>(
-    `${API_ENDPOINTS.GET_ARTICLE_ANALYSIS}/${authorName}`
-  );
-
-  return response;
-}
-
-export async function searchArticleByKeyword(keyword: string) {
-  const response = await HttpClient.get<APIResponse<Article[]>>(
-    `${API_ENDPOINTS.SEARCH_ARTICLE}?keyword=${keyword}`
+    `${API_ENDPOINTS.PUBLIC}/${authorName}/category/${categoryId}/article?pageNumber=${page}`
   );
 
   return response;
@@ -170,7 +170,15 @@ export async function searchArticlePublicByKeyword(
   authorName: string
 ) {
   const response = await HttpClient.get<APIResponse<Article[]>>(
-    `${API_ENDPOINTS.SEARCH_ARTICLE_PUBLIC}/${authorName}?keyword=${keyword}`
+    `${API_ENDPOINTS.PUBLIC}/${authorName}/article/search?keyword=${encodeURIComponent(keyword)}`
+  );
+
+  return response;
+}
+
+export async function getArticleAnalysis(authorName: string) {
+  const response = await HttpClient.get<APIResponse<ArticleAnalysis>>(
+    `${API_ENDPOINTS.PUBLIC}/${authorName}/analysis`
   );
 
   return response;

@@ -12,7 +12,7 @@ const fetchArticleCategories = async () => {
 
   try {
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}${API_ENDPOINTS.GET_ALL_CATEGORY}`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}${API_ENDPOINTS.CATEGORY}`,
       {
         headers: token
           ? {

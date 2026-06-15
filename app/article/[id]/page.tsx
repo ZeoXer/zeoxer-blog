@@ -18,7 +18,7 @@ interface PageProps {
 
 const fetchArticle = cache(async (id: number): Promise<TArticle> => {
   try {
-    const { data } = await getPublicArticle(id, "ZeoXer");
+    const { data } = await getPublicArticle(id, USER_NAME);
     return {
       id: data.id,
       title: data.title,

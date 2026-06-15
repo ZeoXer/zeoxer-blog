@@ -2,15 +2,18 @@
 import { Article } from "@/types/article";
 import { MetadataRoute } from "next";
 
-async function getAllArticles() {
-  const apiUrl =
-    "https://zeoxer.com/article/public/getAllPublicArticles/ZeoXer";
+const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME || "";
+
+async function getAllArticles(): Promise<Article[]> {
+  const baseApi = process.env.NEXT_PUBLIC_BASE_API_URL;
+  if (!baseApi || !USER_NAME) {
+    return [];
+  }
 
   try {
-    const res = await fetch(apiUrl);
+    const res = await fetch(`${baseApi}/public/${USER_NAME}/article`);
     const rawText = await res.text();
-
-    return JSON.parse(rawText).data;
+    return JSON.parse(rawText).data ?? [];
   } catch (error) {
     console.error("Sitemap 資料抓取失敗:", error);
     return [];
@@ -20,18 +23,15 @@ async function getAllArticles() {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://blog.zeoxer.com";
 
-  // 1. 抓取動態文章資料
   const articles = await getAllArticles();
 
-  // 2. 將文章資料轉換成 Sitemap 格式
-  const articleUrls = articles.map((article: Article) => ({
+  const articleUrls = articles.map((article) => ({
     url: `${baseUrl}/article/${article.id}`,
     lastModified: new Date(article.updated_at),
-    changeFrequency: "weekly" as const, //Google 更新頻率
+    changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
-  // 3. 定義靜態頁面
   const staticRoutes = [
     {
       url: baseUrl,
@@ -47,6 +47,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 4. 合併並回傳
   return [...staticRoutes, ...articleUrls];
 }
